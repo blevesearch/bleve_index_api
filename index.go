@@ -115,10 +115,6 @@ type IndexReaderFuzzy interface {
 	FieldDictFuzzy(field string, term string, fuzziness int, prefix string) (FieldDict, error)
 }
 
-type IndexReaderOnly interface {
-	FieldDictOnly(field string, onlyTerms [][]byte, includeCount bool) (FieldDict, error)
-}
-
 type IndexReaderContains interface {
 	FieldDictContains(field string) (FieldDictContains, error)
 }
