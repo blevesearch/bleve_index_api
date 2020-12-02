@@ -14,59 +14,14 @@
 
 package index
 
-import (
-	"reflect"
-)
-
-var reflectStaticSizeAnalysisResult int
-
-func init() {
-	var ar AnalysisResult
-	reflectStaticSizeAnalysisResult = int(reflect.TypeOf(ar).Size())
-}
-
-type IndexRow interface {
-	KeySize() int
-	KeyTo([]byte) (int, error)
-	Key() []byte
-
-	ValueSize() int
-	ValueTo([]byte) (int, error)
-	Value() []byte
-}
-
-type AnalysisResult struct {
-	DocID string
-	Rows  []IndexRow
-
-	// scorch
-	Document Document
-}
-
-func (a *AnalysisResult) Size() int {
-	return reflectStaticSizeAnalysisResult
-}
-
-type AnalysisWork struct {
-	i  Index
-	d  Document
-	rc chan *AnalysisResult
-}
-
-func NewAnalysisWork(i Index, d Document, rc chan *AnalysisResult) *AnalysisWork {
-	return &AnalysisWork{
-		i:  i,
-		d:  d,
-		rc: rc,
-	}
-}
+type AnalysisWork func()
 
 type AnalysisQueue struct {
-	queue chan *AnalysisWork
+	queue chan AnalysisWork
 	done  chan struct{}
 }
 
-func (q *AnalysisQueue) Queue(work *AnalysisWork) {
+func (q *AnalysisQueue) Queue(work AnalysisWork) {
 	q.queue <- work
 }
 
@@ -76,7 +31,7 @@ func (q *AnalysisQueue) Close() {
 
 func NewAnalysisQueue(numWorkers int) *AnalysisQueue {
 	rv := AnalysisQueue{
-		queue: make(chan *AnalysisWork),
+		queue: make(chan AnalysisWork),
 		done:  make(chan struct{}),
 	}
 	for i := 0; i < numWorkers; i++ {
@@ -92,8 +47,7 @@ func AnalysisWorker(q AnalysisQueue) {
 		case <-q.done:
 			return
 		case w := <-q.queue:
-			r := w.i.Analyze(w.d)
-			w.rc <- r
+			w()
 		}
 	}
 }

@@ -53,8 +53,6 @@ type Index interface {
 	Stats() json.Marshaler
 	StatsMap() map[string]interface{}
 
-	Analyze(d Document) *AnalysisResult
-
 	Advanced() (store.KVStore, error)
 }
 
