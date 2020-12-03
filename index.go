@@ -19,8 +19,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-
-	"github.com/blevesearch/bleve_index_api/store"
 )
 
 var reflectStaticSizeTermFieldDoc int
@@ -52,8 +50,6 @@ type Index interface {
 
 	Stats() json.Marshaler
 	StatsMap() map[string]interface{}
-
-	Advanced() (store.KVStore, error)
 }
 
 type DocumentFieldTermVisitor func(field string, term []byte)
