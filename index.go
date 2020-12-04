@@ -31,8 +31,6 @@ func init() {
 	reflectStaticSizeTermFieldVector = int(reflect.TypeOf(tfv).Size())
 }
 
-var ErrorUnknownStorageType = fmt.Errorf("unknown storage type")
-
 type Index interface {
 	Open() error
 	Close() error
