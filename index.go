@@ -81,10 +81,6 @@ type IndexReader interface {
 	ExternalID(id IndexInternalID) (string, error)
 	InternalID(id string) (IndexInternalID, error)
 
-	DumpAll() chan interface{}
-	DumpDoc(id string) chan interface{}
-	DumpFields() chan interface{}
-
 	Close() error
 }
 
