@@ -17,7 +17,6 @@ package index
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"reflect"
 )
 
@@ -31,7 +30,7 @@ func init() {
 	reflectStaticSizeTermFieldVector = int(reflect.TypeOf(tfv).Size())
 }
 
-type Index interface {
+type Writer interface {
 	Open() error
 	Close() error
 
@@ -44,7 +43,7 @@ type Index interface {
 
 	// Reader returns a low-level accessor on the index data. Close it to
 	// release associated resources.
-	Reader() (IndexReader, error)
+	Reader() (Reader, error)
 
 	Stats() json.Marshaler
 	StatsMap() map[string]interface{}
@@ -52,7 +51,7 @@ type Index interface {
 
 type DocumentFieldTermVisitor func(field string, term []byte)
 
-type IndexReader interface {
+type Reader interface {
 	TermFieldReader(term []byte, field string, includeFreq, includeNorm, includeTermVectors bool) (TermFieldReader, error)
 
 	// DocIDReader returns an iterator over all doc ids
@@ -68,7 +67,7 @@ type IndexReader interface {
 	FieldDictPrefix(field string, termPrefix []byte) (FieldDict, error)
 
 	Document(id string) (Document, error)
-	DocumentVisitFieldTerms(id IndexInternalID, fields []string, visitor DocumentFieldTermVisitor) error
+	DocumentVisitFieldTerms(id InternalID, fields []string, visitor DocumentFieldTermVisitor) error
 
 	DocValueReader(fields []string) (DocValueReader, error)
 
@@ -78,21 +77,21 @@ type IndexReader interface {
 
 	DocCount() (uint64, error)
 
-	ExternalID(id IndexInternalID) (string, error)
-	InternalID(id string) (IndexInternalID, error)
+	ExternalID(id InternalID) (string, error)
+	InternalID(id string) (InternalID, error)
 
 	Close() error
 }
 
-type IndexReaderRegexp interface {
+type ReaderRegexp interface {
 	FieldDictRegexp(field string, regex string) (FieldDict, error)
 }
 
-type IndexReaderFuzzy interface {
+type ReaderFuzzy interface {
 	FieldDictFuzzy(field string, term string, fuzziness int, prefix string) (FieldDict, error)
 }
 
-type IndexReaderContains interface {
+type ReaderContains interface {
 	FieldDictContains(field string) (FieldDictContains, error)
 }
 
@@ -132,20 +131,20 @@ func (tfv *TermFieldVector) Size() int {
 		len(tfv.Field) + len(tfv.ArrayPositions)*SizeOfUint64
 }
 
-// IndexInternalID is an opaque document identifier interal to the index impl
-type IndexInternalID []byte
+// InternalID is an opaque document identifier interal to the index impl
+type InternalID []byte
 
-func (id IndexInternalID) Equals(other IndexInternalID) bool {
+func (id InternalID) Equals(other InternalID) bool {
 	return id.Compare(other) == 0
 }
 
-func (id IndexInternalID) Compare(other IndexInternalID) int {
+func (id InternalID) Compare(other InternalID) int {
 	return bytes.Compare(id, other)
 }
 
 type TermFieldDoc struct {
 	Term    string
-	ID      IndexInternalID
+	ID      InternalID
 	Freq    uint64
 	Norm    float64
 	Vectors []*TermFieldVector
@@ -186,7 +185,7 @@ type TermFieldReader interface {
 
 	// Advance resets the enumeration at specified document or its immediate
 	// follower.
-	Advance(ID IndexInternalID, preAlloced *TermFieldDoc) (*TermFieldDoc, error)
+	Advance(ID InternalID, preAlloced *TermFieldDoc) (*TermFieldDoc, error)
 
 	// Count returns the number of documents contains the term in this field.
 	Count() uint64
@@ -214,134 +213,26 @@ type FieldDictContains interface {
 type DocIDReader interface {
 	// Next returns the next document internal identifier in the natural
 	// index order, nil when the end of the sequence is reached.
-	Next() (IndexInternalID, error)
+	Next() (InternalID, error)
 
 	// Advance resets the iteration to the first internal identifier greater than
 	// or equal to ID. If ID is smaller than the start of the range, the iteration
 	// will start there instead. If ID is greater than or equal to the end of
 	// the range, Next() call will return io.EOF.
-	Advance(ID IndexInternalID) (IndexInternalID, error)
+	Advance(ID InternalID) (InternalID, error)
 
 	Size() int
 
 	Close() error
 }
 
-type BatchCallback func(error)
-
-type Batch struct {
-	IndexOps          map[string]Document
-	InternalOps       map[string][]byte
-	persistedCallback BatchCallback
-}
-
-func NewBatch() *Batch {
-	return &Batch{
-		IndexOps:    make(map[string]Document),
-		InternalOps: make(map[string][]byte),
-	}
-}
-
-func (b *Batch) Update(doc Document) {
-	b.IndexOps[doc.ID()] = doc
-}
-
-func (b *Batch) Delete(id string) {
-	b.IndexOps[id] = nil
-}
-
-func (b *Batch) SetInternal(key, val []byte) {
-	b.InternalOps[string(key)] = val
-}
-
-func (b *Batch) DeleteInternal(key []byte) {
-	b.InternalOps[string(key)] = nil
-}
-
-func (b *Batch) SetPersistedCallback(f BatchCallback) {
-	b.persistedCallback = f
-}
-
-func (b *Batch) PersistedCallback() BatchCallback {
-	return b.persistedCallback
-}
-
-func (b *Batch) String() string {
-	rv := fmt.Sprintf("Batch (%d ops, %d internal ops)\n", len(b.IndexOps), len(b.InternalOps))
-	for k, v := range b.IndexOps {
-		if v != nil {
-			rv += fmt.Sprintf("\tINDEX - '%s'\n", k)
-		} else {
-			rv += fmt.Sprintf("\tDELETE - '%s'\n", k)
-		}
-	}
-	for k, v := range b.InternalOps {
-		if v != nil {
-			rv += fmt.Sprintf("\tSET INTERNAL - '%s'\n", k)
-		} else {
-			rv += fmt.Sprintf("\tDELETE INTERNAL - '%s'\n", k)
-		}
-	}
-	return rv
-}
-
-func (b *Batch) Reset() {
-	b.IndexOps = make(map[string]Document)
-	b.InternalOps = make(map[string][]byte)
-	b.persistedCallback = nil
-}
-
-func (b *Batch) Merge(o *Batch) {
-	for k, v := range o.IndexOps {
-		b.IndexOps[k] = v
-	}
-	for k, v := range o.InternalOps {
-		b.InternalOps[k] = v
-	}
-}
-
-func (b *Batch) TotalDocSize() int {
-	var s int
-	for k, v := range b.IndexOps {
-		if v != nil {
-			s += v.Size() + SizeOfString
-		}
-		s += len(k)
-	}
-	return s
-}
-
-// Optimizable represents an optional interface that implementable by
-// optimizable resources (e.g., TermFieldReaders, Searchers).  These
-// optimizable resources are provided the same OptimizableContext
-// instance, so that they can coordinate via dynamic interface
-// casting.
-type Optimizable interface {
-	Optimize(kind string, octx OptimizableContext) (OptimizableContext, error)
-}
-
-// Represents a result of optimization -- see the Finish() method.
-type Optimized interface{}
-
-type OptimizableContext interface {
-	// Once all the optimzable resources have been provided the same
-	// OptimizableContext instance, the optimization preparations are
-	// finished or completed via the Finish() method.
-	//
-	// Depending on the optimization being performed, the Finish()
-	// method might return a non-nil Optimized instance.  For example,
-	// the Optimized instance might represent an optimized
-	// TermFieldReader instance.
-	Finish() (Optimized, error)
-}
-
 type DocValueReader interface {
-	VisitDocValues(id IndexInternalID, visitor DocumentFieldTermVisitor) error
+	VisitDocValues(id InternalID, visitor DocumentFieldTermVisitor) error
 }
 
-// IndexBuilder is an interface supported by some index schemes
+// Builder is an interface supported by some index schemes
 // to allow direct write-only index building
-type IndexBuilder interface {
+type Builder interface {
 	Index(doc Document) error
 	Close() error
 }
