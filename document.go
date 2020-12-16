@@ -38,10 +38,7 @@ type Field interface {
 
 	Analyze()
 
-	IsIndexed() bool
-	IsStored() bool
-	IncludeDocValues() bool
-	IncludeTermVectors() bool
+	Options() FieldIndexingOptions
 
 	AnalyzedLength() int
 	AnalyzedTokenFrequencies() TokenFrequencies
