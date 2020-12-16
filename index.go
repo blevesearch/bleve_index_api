@@ -17,7 +17,6 @@ package index
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"reflect"
 )
 
@@ -225,114 +224,6 @@ type DocIDReader interface {
 	Size() int
 
 	Close() error
-}
-
-type BatchCallback func(error)
-
-type Batch struct {
-	IndexOps          map[string]Document
-	InternalOps       map[string][]byte
-	persistedCallback BatchCallback
-}
-
-func NewBatch() *Batch {
-	return &Batch{
-		IndexOps:    make(map[string]Document),
-		InternalOps: make(map[string][]byte),
-	}
-}
-
-func (b *Batch) Update(doc Document) {
-	b.IndexOps[doc.ID()] = doc
-}
-
-func (b *Batch) Delete(id string) {
-	b.IndexOps[id] = nil
-}
-
-func (b *Batch) SetInternal(key, val []byte) {
-	b.InternalOps[string(key)] = val
-}
-
-func (b *Batch) DeleteInternal(key []byte) {
-	b.InternalOps[string(key)] = nil
-}
-
-func (b *Batch) SetPersistedCallback(f BatchCallback) {
-	b.persistedCallback = f
-}
-
-func (b *Batch) PersistedCallback() BatchCallback {
-	return b.persistedCallback
-}
-
-func (b *Batch) String() string {
-	rv := fmt.Sprintf("Batch (%d ops, %d internal ops)\n", len(b.IndexOps), len(b.InternalOps))
-	for k, v := range b.IndexOps {
-		if v != nil {
-			rv += fmt.Sprintf("\tINDEX - '%s'\n", k)
-		} else {
-			rv += fmt.Sprintf("\tDELETE - '%s'\n", k)
-		}
-	}
-	for k, v := range b.InternalOps {
-		if v != nil {
-			rv += fmt.Sprintf("\tSET INTERNAL - '%s'\n", k)
-		} else {
-			rv += fmt.Sprintf("\tDELETE INTERNAL - '%s'\n", k)
-		}
-	}
-	return rv
-}
-
-func (b *Batch) Reset() {
-	b.IndexOps = make(map[string]Document)
-	b.InternalOps = make(map[string][]byte)
-	b.persistedCallback = nil
-}
-
-func (b *Batch) Merge(o *Batch) {
-	for k, v := range o.IndexOps {
-		b.IndexOps[k] = v
-	}
-	for k, v := range o.InternalOps {
-		b.InternalOps[k] = v
-	}
-}
-
-func (b *Batch) TotalDocSize() int {
-	var s int
-	for k, v := range b.IndexOps {
-		if v != nil {
-			s += v.Size() + SizeOfString
-		}
-		s += len(k)
-	}
-	return s
-}
-
-// Optimizable represents an optional interface that implementable by
-// optimizable resources (e.g., TermFieldReaders, Searchers).  These
-// optimizable resources are provided the same OptimizableContext
-// instance, so that they can coordinate via dynamic interface
-// casting.
-type Optimizable interface {
-	Optimize(kind string, octx OptimizableContext) (OptimizableContext, error)
-}
-
-// Represents a result of optimization -- see the Finish() method.
-type Optimized interface{}
-
-type OptimizableContext interface {
-	// Once all the optimzable resources have been provided the same
-	// OptimizableContext instance, the optimization preparations are
-	// finished or completed via the Finish() method.
-	//
-	// Depending on the optimization being performed, the Finish()
-	// method might return a non-nil Optimized instance.  For example,
-	// the Optimized instance might represent an optimized
-	// TermFieldReader instance.
-	Finish() (Optimized, error)
 }
 
 type DocValueReader interface {
