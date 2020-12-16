@@ -40,7 +40,7 @@ type TokenLocation struct {
 
 func (tl *TokenLocation) Size() int {
 	rv := reflectStaticSizeTokenLocation
-	rv += len(tl.ArrayPositions) * SizeOfUint64
+	rv += len(tl.ArrayPositions) * sizeOfUint64
 	return rv
 }
 
@@ -75,8 +75,8 @@ func (tf *TokenFreq) SetFrequency(frequency int) {
 type TokenFrequencies map[string]*TokenFreq
 
 func (tfs TokenFrequencies) Size() int {
-	rv := SizeOfMap
-	rv += len(tfs) * (SizeOfString + SizeOfPtr)
+	rv := sizeOfMap
+	rv += len(tfs) * (sizeOfString + sizeOfPtr)
 	for k, v := range tfs {
 		rv += len(k)
 		rv += v.Size()

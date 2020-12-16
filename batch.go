@@ -93,7 +93,7 @@ func (b *Batch) TotalDocSize() int {
 	var s int
 	for k, v := range b.IndexOps {
 		if v != nil {
-			s += v.Size() + SizeOfString
+			s += v.Size() + sizeOfString
 		}
 		s += len(k)
 	}
