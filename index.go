@@ -128,8 +128,8 @@ type TermFieldVector struct {
 }
 
 func (tfv *TermFieldVector) Size() int {
-	return reflectStaticSizeTermFieldVector + SizeOfPtr +
-		len(tfv.Field) + len(tfv.ArrayPositions)*SizeOfUint64
+	return reflectStaticSizeTermFieldVector + sizeOfPtr +
+		len(tfv.Field) + len(tfv.ArrayPositions)*sizeOfUint64
 }
 
 // IndexInternalID is an opaque document identifier interal to the index impl
@@ -152,7 +152,7 @@ type TermFieldDoc struct {
 }
 
 func (tfd *TermFieldDoc) Size() int {
-	sizeInBytes := reflectStaticSizeTermFieldDoc + SizeOfPtr +
+	sizeInBytes := reflectStaticSizeTermFieldDoc + sizeOfPtr +
 		len(tfd.Term) + len(tfd.ID)
 
 	for _, entry := range tfd.Vectors {
@@ -304,7 +304,7 @@ func (b *Batch) TotalDocSize() int {
 	var s int
 	for k, v := range b.IndexOps {
 		if v != nil {
-			s += v.Size() + SizeOfString
+			s += v.Size() + sizeOfString
 		}
 		s += len(k)
 	}
