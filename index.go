@@ -49,7 +49,9 @@ type Index interface {
 	StatsMap() map[string]interface{}
 }
 
-type DocumentFieldTermVisitor func(field string, term []byte)
+// FieldTermVisitor is the callback function used
+// when visiting stored fields and doc values.
+type FieldTermVisitor func(field string, term []byte)
 
 type IndexReader interface {
 	TermFieldReader(term []byte, field string, includeFreq, includeNorm, includeTermVectors bool) (TermFieldReader, error)
@@ -67,7 +69,7 @@ type IndexReader interface {
 	FieldDictPrefix(field string, termPrefix []byte) (FieldDict, error)
 
 	Document(id string) (Document, error)
-	DocumentVisitFieldTerms(id IndexInternalID, fields []string, visitor DocumentFieldTermVisitor) error
+	VisitStoredFieldTerms(id IndexInternalID, fields []string, visitor FieldTermVisitor) error
 
 	DocValueReader(fields []string) (DocValueReader, error)
 
@@ -227,7 +229,7 @@ type DocIDReader interface {
 }
 
 type DocValueReader interface {
-	VisitDocValues(id IndexInternalID, visitor DocumentFieldTermVisitor) error
+	VisitDocValues(id IndexInternalID, visitor FieldTermVisitor) error
 }
 
 // IndexBuilder is an interface supported by some index schemes
