@@ -16,7 +16,6 @@ package index
 
 import (
 	"bytes"
-	"encoding/json"
 	"reflect"
 )
 
@@ -45,11 +44,8 @@ type Index interface {
 	// release associated resources.
 	Reader() (IndexReader, error)
 
-	Stats() json.Marshaler
 	StatsMap() map[string]interface{}
 }
-
-type DocumentFieldTermVisitor func(field string, term []byte)
 
 type IndexReader interface {
 	TermFieldReader(term []byte, field string, includeFreq, includeNorm, includeTermVectors bool) (TermFieldReader, error)
@@ -67,7 +63,6 @@ type IndexReader interface {
 	FieldDictPrefix(field string, termPrefix []byte) (FieldDict, error)
 
 	Document(id string) (Document, error)
-	DocumentVisitFieldTerms(id IndexInternalID, fields []string, visitor DocumentFieldTermVisitor) error
 
 	DocValueReader(fields []string) (DocValueReader, error)
 
@@ -93,29 +88,6 @@ type IndexReaderFuzzy interface {
 
 type IndexReaderContains interface {
 	FieldDictContains(field string) (FieldDictContains, error)
-}
-
-// FieldTerms contains the terms used by a document, keyed by field
-type FieldTerms map[string][]string
-
-// FieldsNotYetCached returns a list of fields not yet cached out of a larger list of fields
-func (f FieldTerms) FieldsNotYetCached(fields []string) []string {
-	rv := make([]string, 0, len(fields))
-	for _, field := range fields {
-		if _, ok := f[field]; !ok {
-			rv = append(rv, field)
-		}
-	}
-	return rv
-}
-
-// Merge will combine two FieldTerms
-// it assumes that the terms lists are complete (thus do not need to be merged)
-// field terms from the other list always replace the ones in the receiver
-func (f FieldTerms) Merge(other FieldTerms) {
-	for field, terms := range other {
-		f[field] = terms
-	}
 }
 
 type TermFieldVector struct {
@@ -225,6 +197,8 @@ type DocIDReader interface {
 
 	Close() error
 }
+
+type DocumentFieldTermVisitor func(field string, term []byte)
 
 type DocValueReader interface {
 	VisitDocValues(id IndexInternalID, visitor DocumentFieldTermVisitor) error
