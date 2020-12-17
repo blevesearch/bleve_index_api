@@ -14,6 +14,8 @@
 
 package index
 
+import "time"
+
 type Document interface {
 	ID() string
 	Size() int
@@ -52,4 +54,25 @@ type CompositeField interface {
 	Field
 
 	Compose(field string, length int, freq TokenFrequencies)
+}
+
+type TextField interface {
+	Text() string
+}
+
+type NumericField interface {
+	Number() (float64, error)
+}
+
+type DateTimeField interface {
+	DateTime() (time.Time, error)
+}
+
+type BooleanField interface {
+	Boolean() (bool, error)
+}
+
+type GeoPointField interface {
+	Lon() (float64, error)
+	Lat() (float64, error)
 }
