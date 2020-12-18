@@ -65,7 +65,6 @@ func (tf *TokenFreq) Frequency() int {
 	return tf.frequency
 }
 
-
 func (tf *TokenFreq) SetFrequency(frequency int) {
 	tf.frequency = frequency
 }

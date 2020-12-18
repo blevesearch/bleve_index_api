@@ -15,7 +15,7 @@
 package index
 
 import (
-"reflect"
+	"reflect"
 )
 
 func init() {
@@ -39,5 +39,3 @@ var sizeOfPtr int
 var sizeOfSlice int
 var sizeOfString int
 var sizeOfUint64 int
-
-
