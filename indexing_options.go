@@ -21,6 +21,7 @@ const (
 	StoreField
 	IncludeTermVectors
 	DocValues
+	SkipFreqNorm
 )
 
 func (o FieldIndexingOptions) IsIndexed() bool {
@@ -37,6 +38,10 @@ func (o FieldIndexingOptions) IncludeTermVectors() bool {
 
 func (o FieldIndexingOptions) IncludeDocValues() bool {
 	return o&DocValues != 0
+}
+
+func (o FieldIndexingOptions) SkipFreqNorm() bool {
+	return o&SkipFreqNorm != 0
 }
 
 func (o FieldIndexingOptions) String() string {
@@ -61,6 +66,12 @@ func (o FieldIndexingOptions) String() string {
 			rv += ", "
 		}
 		rv += "DV"
+	}
+	if !o.SkipFreqNorm() {
+		if rv != "" {
+			rv += ", "
+		}
+		rv += "FN"
 	}
 	return rv
 }
