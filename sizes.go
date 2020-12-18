@@ -19,23 +19,17 @@ import (
 )
 
 func init() {
-	var i int
-	sizeOfInt = int(reflect.TypeOf(i).Size())
 	var m map[int]int
 	sizeOfMap = int(reflect.TypeOf(m).Size())
 	var ptr *int
 	sizeOfPtr = int(reflect.TypeOf(ptr).Size())
-	var slice []int
-	sizeOfSlice = int(reflect.TypeOf(slice).Size())
 	var str string
 	sizeOfString = int(reflect.TypeOf(str).Size())
 	var u64 uint64
 	sizeOfUint64 = int(reflect.TypeOf(u64).Size())
 }
 
-var sizeOfInt int
 var sizeOfMap int
 var sizeOfPtr int
-var sizeOfSlice int
 var sizeOfString int
 var sizeOfUint64 int

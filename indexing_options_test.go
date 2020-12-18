@@ -88,7 +88,8 @@ func TestFieldIndexingOptions(t *testing.T) {
 		}
 		actuallyIncludeTermVectors := test.options.IncludeTermVectors()
 		if actuallyIncludeTermVectors != test.includeTermVectors {
-			t.Errorf("expected includeTermVectors to be %v, got %v for %d", test.includeTermVectors, actuallyIncludeTermVectors, test.options)
+			t.Errorf("expected includeTermVectors to be %v, got %v for %d", test.includeTermVectors,
+				actuallyIncludeTermVectors, test.options)
 		}
 		actuallyDocValues := test.options.IncludeDocValues()
 		if actuallyDocValues != test.docValues {
