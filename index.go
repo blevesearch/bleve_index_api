@@ -198,10 +198,10 @@ type DocIDReader interface {
 	Close() error
 }
 
-type DocumentFieldTermVisitor func(field string, term []byte)
+type DocValueVisitor func(field string, term []byte)
 
 type DocValueReader interface {
-	VisitDocValues(id IndexInternalID, visitor DocumentFieldTermVisitor) error
+	VisitDocValues(id IndexInternalID, visitor DocValueVisitor) error
 }
 
 // IndexBuilder is an interface supported by some index schemes
