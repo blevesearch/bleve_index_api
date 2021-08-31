@@ -90,6 +90,10 @@ type IndexReaderContains interface {
 	FieldDictContains(field string) (FieldDictContains, error)
 }
 
+type IndexReaderNumericRange interface {
+	NumericRangeReader(field string, min, max float64, inclusiveMin, inclusiveMax bool) (TermFieldReader, error)
+}
+
 type TermFieldVector struct {
 	Field          string
 	ArrayPositions []uint64
