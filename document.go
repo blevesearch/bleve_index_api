@@ -77,9 +77,9 @@ type GeoPointField interface {
 	Lat() (float64, error)
 }
 
-// TokenisableSpatialField is an optional interface for fields that
+// TokenizableSpatialField is an optional interface for fields that
 // supports pluggable custom hierarchial spatial token generation.
-type TokenisableSpatialField interface {
+type TokenizableSpatialField interface {
 	// SetSpatialAnalyzerPlugin lets the index implementations to
 	// initialise relevant spatial analyzer plugins for the field
 	// to override the spatial token generations during the analysis phase.

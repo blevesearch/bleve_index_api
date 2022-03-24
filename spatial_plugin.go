@@ -21,17 +21,24 @@ type SpatialAnalyzerPlugin interface {
 	// Type returns the plugin type. eg: "s2".
 	Type() string
 
-	// GetIndexTokens returns the hierarchial spatial tokens to be
-	// indexed for the given GeoJSON type data in the document.
+	// GetIndexTokens returns the tokens to be indexed for the
+	// given GeoJSON type data in the document.
 	GetIndexTokens(GeoJSON) []string
 
-	// GetQueryTokens returns the hierarchial spatial tokens to be
-	// queried for the given GeoJSON type data in the document.
+	// GetQueryTokens returns the tokens to be queried for the
+	// given GeoJSON type data in the document.
 	GetQueryTokens(GeoJSON) []string
 }
 
-// GeoJSON is generic interface for any geoJSON type like
+// GeoJSON is generic interface for any geoJSON shapes like
 // points, polygon etc.
 type GeoJSON interface {
+	// Returns the type of geoJSON shape.
 	Type() string
+
+	// Checks whether the given shape intersects with current shape.
+	Intersects(GeoJSON) (bool, error)
+
+	// Checks whether the given shape resides within the current shape.
+	Contains(GeoJSON) (bool, error)
 }
