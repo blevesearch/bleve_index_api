@@ -123,11 +123,12 @@ func (id IndexInternalID) Compare(other IndexInternalID) int {
 }
 
 type TermFieldDoc struct {
-	Term    string
-	ID      IndexInternalID
-	Freq    uint64
-	Norm    float64
-	Vectors []*TermFieldVector
+	Term      string
+	ID        IndexInternalID
+	Freq      uint64
+	Norm      float64
+	Vectors   []*TermFieldVector
+	BytesRead uint64
 }
 
 func (tfd *TermFieldDoc) Size() int {
