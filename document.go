@@ -28,6 +28,7 @@ type Document interface {
 
 	AddIDField()
 
+	SetStoredFieldsBytes(uint64)
 	GetStoredFieldsBytes() uint64
 }
 
