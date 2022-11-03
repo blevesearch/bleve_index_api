@@ -173,6 +173,7 @@ type TermFieldReader interface {
 	Close() error
 
 	Size() int
+	BytesRead() uint64
 }
 
 type DictEntry struct {
@@ -183,6 +184,8 @@ type DictEntry struct {
 type FieldDict interface {
 	Next() (*DictEntry, error)
 	Close() error
+
+	BytesRead() uint64
 }
 
 type FieldDictContains interface {
