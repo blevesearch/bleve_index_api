@@ -16,6 +16,7 @@ package index
 
 import (
 	"bytes"
+	"context"
 	"reflect"
 )
 
@@ -48,7 +49,7 @@ type Index interface {
 }
 
 type IndexReader interface {
-	TermFieldReader(term []byte, field string, includeFreq, includeNorm, includeTermVectors bool) (TermFieldReader, error)
+	TermFieldReader(ctx context.Context, term []byte, field string, includeFreq, includeNorm, includeTermVectors bool) (TermFieldReader, error)
 
 	// DocIDReader returns an iterator over all doc ids
 	// The caller must close returned instance to release associated resources.
@@ -173,7 +174,6 @@ type TermFieldReader interface {
 	Close() error
 
 	Size() int
-	BytesRead() uint64
 }
 
 type DictEntry struct {
@@ -190,6 +190,8 @@ type FieldDict interface {
 
 type FieldDictContains interface {
 	Contains(key []byte) (bool, error)
+
+	BytesRead() uint64
 }
 
 // DocIDReader is the interface exposing enumeration of documents identifiers.
