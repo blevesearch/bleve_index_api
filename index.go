@@ -182,16 +182,16 @@ type DictEntry struct {
 }
 
 type FieldDict interface {
+	FetchIOStats
+
 	Next() (*DictEntry, error)
 	Close() error
-
-	BytesRead() uint64
 }
 
 type FieldDictContains interface {
-	Contains(key []byte) (bool, error)
+	FetchIOStats
 
-	BytesRead() uint64
+	Contains(key []byte) (bool, error)
 }
 
 // DocIDReader is the interface exposing enumeration of documents identifiers.
@@ -212,11 +212,16 @@ type DocIDReader interface {
 	Close() error
 }
 
+type FetchIOStats interface {
+	BytesRead() uint64
+}
+
 type DocValueVisitor func(field string, term []byte)
 
 type DocValueReader interface {
+	FetchIOStats
+
 	VisitDocValues(id IndexInternalID, visitor DocValueVisitor) error
-	BytesRead() uint64
 }
 
 // IndexBuilder is an interface supported by some index schemes
