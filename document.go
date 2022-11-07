@@ -28,8 +28,7 @@ type Document interface {
 
 	AddIDField()
 
-	SetStoredFieldsBytes(uint64)
-	GetStoredFieldsBytes() uint64
+	StoredFieldsBytes() uint64
 }
 
 type FieldVisitor func(Field)
