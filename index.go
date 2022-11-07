@@ -16,6 +16,7 @@ package index
 
 import (
 	"bytes"
+	"context"
 	"reflect"
 )
 
@@ -48,7 +49,7 @@ type Index interface {
 }
 
 type IndexReader interface {
-	TermFieldReader(term []byte, field string, includeFreq, includeNorm, includeTermVectors bool) (TermFieldReader, error)
+	TermFieldReader(ctx context.Context, term []byte, field string, includeFreq, includeNorm, includeTermVectors bool) (TermFieldReader, error)
 
 	// DocIDReader returns an iterator over all doc ids
 	// The caller must close returned instance to release associated resources.
@@ -123,12 +124,11 @@ func (id IndexInternalID) Compare(other IndexInternalID) int {
 }
 
 type TermFieldDoc struct {
-	Term      string
-	ID        IndexInternalID
-	Freq      uint64
-	Norm      float64
-	Vectors   []*TermFieldVector
-	BytesRead uint64
+	Term    string
+	ID      IndexInternalID
+	Freq    uint64
+	Norm    float64
+	Vectors []*TermFieldVector
 }
 
 func (tfd *TermFieldDoc) Size() int {
@@ -183,10 +183,14 @@ type DictEntry struct {
 type FieldDict interface {
 	Next() (*DictEntry, error)
 	Close() error
+
+	BytesRead() uint64
 }
 
 type FieldDictContains interface {
 	Contains(key []byte) (bool, error)
+
+	BytesRead() uint64
 }
 
 // DocIDReader is the interface exposing enumeration of documents identifiers.
@@ -211,6 +215,8 @@ type DocValueVisitor func(field string, term []byte)
 
 type DocValueReader interface {
 	VisitDocValues(id IndexInternalID, visitor DocValueVisitor) error
+
+	BytesRead() uint64
 }
 
 // IndexBuilder is an interface supported by some index schemes
