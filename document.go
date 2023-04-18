@@ -29,6 +29,7 @@ type Document interface {
 	AddIDField()
 
 	StoredFieldsBytes() uint64
+	SynonymInfo() interface{}
 }
 
 type FieldVisitor func(Field)
