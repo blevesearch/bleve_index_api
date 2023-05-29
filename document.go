@@ -19,8 +19,6 @@ import (
 	"reflect"
 	"sync"
 	"time"
-
-	"github.com/blevesearch/bleve/v2/size"
 )
 
 // A synonym document is a json object with the following fields:
@@ -41,7 +39,8 @@ type SynonymDefinition struct {
 
 func (s *SynonymDefinition) Size() int {
 	var sd SynonymDefinition
-	sizeInBytes := len(s.MappingType) + int(reflect.TypeOf(sd).Size()) + size.SizeOfPtr
+	var ptr *int
+	sizeInBytes := len(s.MappingType) + int(reflect.TypeOf(sd).Size()) + int(reflect.TypeOf(ptr).Size())
 	for _, entry := range s.Input {
 		sizeInBytes += len(entry)
 	}
