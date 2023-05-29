@@ -14,7 +14,42 @@
 
 package index
 
-import "time"
+import (
+	"encoding/json"
+	"reflect"
+	"sync"
+	"time"
+
+	"github.com/blevesearch/bleve/v2/size"
+)
+
+// A synonym document is a json object with the following fields:
+//  1. mapping type: either "equivalent" or "explicit"
+//     a. equivalent: all the phrases in the synonym list are equivalent to each other
+//     b. explicit: each phrase in the input list is equivalent to the phrases in the synonym list,
+//     but not to each other
+//  2. input: a list of phrases
+//  3. synonyms: a list of phrases
+//
+// A phrase is a sequence of words separated by spaces, and a word is a sequence of characters.
+// A phrase can be a single word.
+type SynonymDefinition struct {
+	MappingType json.RawMessage   `json:"mappingType"`
+	Input       []json.RawMessage `json:"input"`
+	Synonyms    []json.RawMessage `json:"synonyms"`
+}
+
+func (s *SynonymDefinition) Size() int {
+	var sd SynonymDefinition
+	sizeInBytes := len(s.MappingType) + int(reflect.TypeOf(sd).Size()) + size.SizeOfPtr
+	for _, entry := range s.Input {
+		sizeInBytes += len(entry)
+	}
+	for _, entry := range s.Synonyms {
+		sizeInBytes += len(entry)
+	}
+	return sizeInBytes
+}
 
 type Document interface {
 	ID() string
@@ -29,7 +64,7 @@ type Document interface {
 	AddIDField()
 
 	StoredFieldsBytes() uint64
-	SynonymInfo() interface{}
+	SynonymInfo() *SynonymDefinition
 }
 
 type FieldVisitor func(Field)
@@ -42,6 +77,8 @@ type Field interface {
 	EncodedFieldType() byte
 
 	Analyze()
+
+	AnalyzeSynonyms([]*SynonymDefinition, *sync.Map)
 
 	Options() FieldIndexingOptions
 

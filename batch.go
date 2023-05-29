@@ -14,20 +14,26 @@
 
 package index
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type BatchCallback func(error)
 
 type Batch struct {
 	IndexOps          map[string]Document
 	InternalOps       map[string][]byte
+	SynOps            map[string]Document
+	SynonymAnalyzers  map[string]interface{}
 	persistedCallback BatchCallback
 }
 
 func NewBatch() *Batch {
 	return &Batch{
-		IndexOps:    make(map[string]Document),
-		InternalOps: make(map[string][]byte),
+		IndexOps:         make(map[string]Document),
+		SynOps:           make(map[string]Document),
+		InternalOps:      make(map[string][]byte),
+		SynonymAnalyzers: make(map[string]interface{}),
 	}
 }
 
@@ -43,6 +49,10 @@ func (b *Batch) SetInternal(key, val []byte) {
 	b.InternalOps[string(key)] = val
 }
 
+func (b *Batch) SetSynonymAnalyzer(key string, val interface{}) {
+	b.SynonymAnalyzers[key] = val
+}
+
 func (b *Batch) DeleteInternal(key []byte) {
 	b.InternalOps[string(key)] = nil
 }
@@ -53,6 +63,10 @@ func (b *Batch) SetPersistedCallback(f BatchCallback) {
 
 func (b *Batch) PersistedCallback() BatchCallback {
 	return b.persistedCallback
+}
+
+func (b *Batch) UpdateSynonym(doc Document) {
+	b.SynOps[doc.ID()] = doc
 }
 
 func (b *Batch) String() string {
