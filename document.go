@@ -83,6 +83,14 @@ type GeoShapeField interface {
 	GeoShape() (GeoJSON, error)
 }
 
+type DenseVectorField interface {
+	DenseVector() []float32
+	// Dimensionality of the dense vector
+	Dims() int
+	// Similarity metric to be used for scoring the dense vectors
+	Similarity() string
+}
+
 // TokenizableSpatialField is an optional interface for fields that
 // supports pluggable custom hierarchial spatial token generation.
 type TokenizableSpatialField interface {
