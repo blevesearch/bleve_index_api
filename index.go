@@ -79,6 +79,10 @@ type IndexReader interface {
 	Close() error
 }
 
+type IndexReaderBackupable interface {
+	Backup(string) error
+}
+
 type IndexReaderRegexp interface {
 	FieldDictRegexp(field string, regex string) (FieldDict, error)
 }
