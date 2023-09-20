@@ -19,7 +19,17 @@ package index
 
 import (
 	"context"
+	"reflect"
+
+	"github.com/blevesearch/bleve/v2/size"
 )
+
+var reflectStaticSizeVectorDoc int
+
+func init() {
+	var vd VectorDoc
+	reflectStaticSizeVectorDoc = int(reflect.TypeOf(vd).Size())
+}
 
 type VectorReader interface {
 	// Next returns the next document similar to the vector, in this field, or nil
@@ -50,7 +60,8 @@ type VectorDoc struct {
 }
 
 func (vd *VectorDoc) Size() int {
-	return 1
+	return reflectStaticSizeVectorDoc + size.SizeOfPtr + len(vd.Vector) +
+		len(vd.ID)
 }
 
 // Reset allows an already allocated VectorDoc to be reused
