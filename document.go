@@ -79,6 +79,11 @@ type GeoPointField interface {
 	Lat() (float64, error)
 }
 
+type SynonymField interface {
+	AnalyzedSynonymDefinition() *SynonymDefinition
+	Name() string
+}
+
 type GeoShapeField interface {
 	GeoShape() (GeoJSON, error)
 }

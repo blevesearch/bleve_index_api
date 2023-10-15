@@ -59,6 +59,8 @@ type IndexReader interface {
 
 	FieldDict(field string) (FieldDict, error)
 
+	SynonymMetadata(field string) ([]*SynonymMetadata, error)
+
 	// FieldDictRange is currently defined to include the start and end terms
 	FieldDictRange(field string, startTerm []byte, endTerm []byte) (FieldDict, error)
 	FieldDictPrefix(field string, termPrefix []byte) (FieldDict, error)
