@@ -20,13 +20,15 @@ package index
 import (
 	"context"
 	"reflect"
-
-	"github.com/blevesearch/bleve/v2/size"
 )
 
+var sizeOfPtr int
 var reflectStaticSizeVectorDoc int
 
 func init() {
+	var ptr *int
+	sizeOfPtr = int(reflect.TypeOf(ptr).Size())
+
 	var vd VectorDoc
 	reflectStaticSizeVectorDoc = int(reflect.TypeOf(vd).Size())
 }
@@ -60,7 +62,7 @@ type VectorDoc struct {
 }
 
 func (vd *VectorDoc) Size() int {
-	return reflectStaticSizeVectorDoc + size.SizeOfPtr + len(vd.Vector) +
+	return reflectStaticSizeVectorDoc + sizeOfPtr + len(vd.Vector) +
 		len(vd.ID)
 }
 
