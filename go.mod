@@ -1,3 +1,3 @@
 module github.com/blevesearch/bleve_index_api
 
-go 1.18
+go 1.20
