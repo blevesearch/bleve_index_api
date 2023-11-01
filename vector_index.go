@@ -22,13 +22,9 @@ import (
 	"reflect"
 )
 
-var sizeOfPtr int
 var reflectStaticSizeVectorDoc int
 
 func init() {
-	var ptr *int
-	sizeOfPtr = int(reflect.TypeOf(ptr).Size())
-
 	var vd VectorDoc
 	reflectStaticSizeVectorDoc = int(reflect.TypeOf(vd).Size())
 }
