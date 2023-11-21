@@ -29,6 +29,12 @@ func init() {
 	reflectStaticSizeVectorDoc = int(reflect.TypeOf(vd).Size())
 }
 
+type VectorIndex interface {
+	Search([]float32, int64) ([]float32, []int64, error)
+
+	Close()
+}
+
 type VectorReader interface {
 	// Next returns the next document similar to the vector, in this field, or nil
 	// when it reaches the end of the enumeration.  The preAlloced VectorDoc
