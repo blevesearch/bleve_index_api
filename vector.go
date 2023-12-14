@@ -27,6 +27,12 @@ type VectorField interface {
 
 // -----------------------------------------------------------------------------
 
+// Min and Max allowed dimensions for a vector field
+const (
+	MinVectorDims = 1
+	MaxVectorDims = 2048
+)
+
 const (
 	EuclideanDistance = "l2_norm"
 
