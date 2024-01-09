@@ -23,6 +23,8 @@ type VectorField interface {
 	Dims() int
 	// Similarity metric to be used for scoring the vectors
 	Similarity() string
+	// index type - tuned for either latency/recall
+	IndexType() string
 }
 
 // -----------------------------------------------------------------------------
@@ -45,3 +47,8 @@ var SupportedSimilarityMetrics = map[string]struct{}{
 	EuclideanDistance: {},
 	CosineSimilarity:  {},
 }
+
+const IndexTypeRecall = "recall"
+const IndexTypeLatency = "latency"
+
+const DefaultIndexType = IndexTypeRecall
