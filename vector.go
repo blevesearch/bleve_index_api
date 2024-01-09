@@ -52,3 +52,8 @@ const IndexTypeRecall = "recall"
 const IndexTypeLatency = "latency"
 
 const DefaultIndexType = IndexTypeRecall
+
+var SupportedIndexTunables = map[string]struct{}{
+	IndexTypeRecall:  {},
+	IndexTypeLatency: {},
+}
