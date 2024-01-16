@@ -48,6 +48,8 @@ var SupportedSimilarityMetrics = map[string]struct{}{
 	CosineSimilarity:  {},
 }
 
+// -----------------------------------------------------------------------------
+
 const (
 	IndexOptimizedForRecall  = "recall"
 	IndexOptimizedForLatency = "latency"
@@ -60,8 +62,8 @@ var SupportedVectorIndexOptimizations = map[string]int{
 	IndexOptimizedForLatency: 1,
 }
 
-// maps the index optimization type int to the string
-var IndexOptimizationMap = map[int]string{
-	SupportedVectorIndexOptimizations[IndexOptimizedForRecall]:  IndexOptimizedForRecall,
-	SupportedVectorIndexOptimizations[IndexOptimizedForLatency]: IndexOptimizedForLatency,
+// Reverse maps vector index optimizations': int -> string
+var VectorIndexOptimizationsReverseLookup = map[int]string{
+	0: IndexOptimizedForRecall,
+	1: IndexOptimizedForLatency,
 }
