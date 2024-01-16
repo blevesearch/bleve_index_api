@@ -23,7 +23,7 @@ type VectorField interface {
 	Dims() int
 	// Similarity metric to be used for scoring the vectors
 	Similarity() string
-	// The metric(recall/latency) the index is optimized for
+	// nlist/nprobe config (recall/latency) the index is optimized for
 	IndexOptimizedFor() string
 }
 
