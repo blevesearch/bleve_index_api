@@ -53,9 +53,15 @@ const (
 	IndexOptimizedForLatency = "latency"
 )
 
-const DefaultIndexOptimizedFor = IndexOptimizedForRecall
+const DefaultIndexOptimization = IndexOptimizedForRecall
 
 var SupportedVectorIndexOptimizations = map[string]int{
+	IndexOptimizedForRecall:  0,
 	IndexOptimizedForLatency: 1,
-	IndexOptimizedForRecall:  2,
+}
+
+// maps the index optimization type int to the string
+var IndexOptimizationMap = map[int]string{
+	SupportedVectorIndexOptimizations[IndexOptimizedForRecall]:  IndexOptimizedForRecall,
+	SupportedVectorIndexOptimizations[IndexOptimizedForLatency]: IndexOptimizedForLatency,
 }
