@@ -225,3 +225,25 @@ type IndexBuilder interface {
 	Index(doc Document) error
 	Close() error
 }
+
+// IndexCopyable is an index which supports an online copy operation
+// of the index.
+type IndexCopyable interface {
+	// CopyTo creates a fully functional copy of the index at the
+	// specified destination directory implementation.
+	CopyTo(d Directory) error
+}
+
+type ReaderCopyable interface {
+	CopyableReader() CopyReader
+}
+
+// CopyReader is an index reader which should be used over the
+// regular index reader when copying an index.
+type CopyReader interface {
+	// Must support the CopyTo method so that the index reader
+	// can be used to initiate the copy operation.
+	IndexCopyable
+	// CloseCopyReader closes the copy reader.
+	CloseCopyReader() error
+}
