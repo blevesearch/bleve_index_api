@@ -48,6 +48,17 @@ type Index interface {
 	StatsMap() map[string]interface{}
 }
 
+// CopyIndex is an extended index that supports an online copy of the index to a new
+// location. The CopyReader method should be used to obtain a reader that can be
+// used to initiate the copy operation.
+type CopyIndex interface {
+	Index
+	// Obtain a copy reader that must be used over the regular
+	// IndexReader so that necessary bookkeeping can be done
+	// while the copy operation is in progress.
+	CopyReader() CopyReader
+}
+
 type IndexReader interface {
 	TermFieldReader(ctx context.Context, term []byte, field string, includeFreq, includeNorm, includeTermVectors bool) (TermFieldReader, error)
 
@@ -77,6 +88,18 @@ type IndexReader interface {
 	InternalID(id string) (IndexInternalID, error)
 
 	Close() error
+}
+
+// CopyReader is an extended index reader which should be used instead of the
+// regular index reader when backing up an index or while performing an online
+// copy of the index.
+type CopyReader interface {
+	IndexReader
+	// Must support the CopyTo method so that the index reader
+	// can be used to initiate the copy operation.
+	CopyTo(d Directory) error
+	// CloseCopyReader closes the copy reader, must be used over Close
+	CloseCopyReader() error
 }
 
 type IndexReaderRegexp interface {
@@ -224,26 +247,4 @@ type DocValueReader interface {
 type IndexBuilder interface {
 	Index(doc Document) error
 	Close() error
-}
-
-// IndexCopyable is an index which supports an online copy operation
-// of the index.
-type IndexCopyable interface {
-	// CopyTo creates a fully functional copy of the index at the
-	// specified destination directory implementation.
-	CopyTo(d Directory) error
-}
-
-type ReaderCopyable interface {
-	CopyableReader() CopyReader
-}
-
-// CopyReader is an index reader which should be used over the
-// regular index reader when copying an index.
-type CopyReader interface {
-	// Must support the CopyTo method so that the index reader
-	// can be used to initiate the copy operation.
-	IndexCopyable
-	// CloseCopyReader closes the copy reader.
-	CloseCopyReader() error
 }
