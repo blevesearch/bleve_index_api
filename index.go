@@ -48,14 +48,12 @@ type Index interface {
 	StatsMap() map[string]interface{}
 }
 
-// CopyIndex is an extended index that supports an online copy of the index to a new
-// location. The CopyReader method should be used to obtain a reader that can be
-// used to initiate the copy operation.
+// CopyIndex is an extended index that supports copying to a new location online.
+// Use the CopyReader method to obtain a reader for initiating the copy operation.
 type CopyIndex interface {
 	Index
-	// Obtain a copy reader that must be used over the regular
-	// IndexReader so that necessary bookkeeping can be done
-	// while the copy operation is in progress.
+	// Obtain a copy reader for the online copy/backup operation,
+	// to handle necessary bookkeeping, instead of using the regular IndexReader.
 	CopyReader() CopyReader
 }
 
@@ -90,15 +88,12 @@ type IndexReader interface {
 	Close() error
 }
 
-// CopyReader is an extended index reader which should be used instead of the
-// regular index reader when backing up an index or while performing an online
-// copy of the index.
+// CopyReader is an extended index reader for backup or online copy operations, replacing the regular index reader.
 type CopyReader interface {
 	IndexReader
-	// Must support the CopyTo method so that the index reader
-	// can be used to initiate the copy operation.
+	// CopyTo performs an online copy or backup of the index to the specified directory.
 	CopyTo(d Directory) error
-	// CloseCopyReader closes the copy reader, must be used over Close
+	// CloseCopyReader must be used instead of Close() to close the copy reader.
 	CloseCopyReader() error
 }
 
