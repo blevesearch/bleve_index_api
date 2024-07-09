@@ -55,8 +55,9 @@ func NormalizeVector(vector []float32) []float32 {
 		mag += v * v
 	}
 	mag = float32(math.Sqrt(float64(mag)))
-	// zannot normalize a zero vector
-	if mag != 0 {
+	// cannot normalize a zero vector
+	// if the magnitude is 1, then the vector is already normalized
+	if mag != 0 && mag != 1 {
 		// normalize the vector
 		for i, v := range vector {
 			vector[i] = v / mag
