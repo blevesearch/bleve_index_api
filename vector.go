@@ -17,6 +17,8 @@
 
 package index
 
+import "math"
+
 type VectorField interface {
 	Vector() []float32
 	// Dimensionality of the vector
@@ -32,12 +34,9 @@ type VectorField interface {
 const (
 	EuclideanDistance = "l2_norm"
 
-	// dotProduct(vecA, vecB) = vecA . vecB = |vecA| * |vecB| * cos(theta);
-	//  where, theta is the angle between vecA and vecB
-	// If vecA and vecB are normalized (unit magnitude), then
-	// vecA . vecB = cos(theta), which is the cosine similarity.
-	// Thus, we don't need a separate similarity type for cosine similarity
-	CosineSimilarity = "dot_product"
+	InnerProduct = "dot_product"
+
+	CosineSimilarity = "cosine"
 )
 
 const DefaultSimilarityMetric = EuclideanDistance
@@ -45,7 +44,25 @@ const DefaultSimilarityMetric = EuclideanDistance
 // Supported similarity metrics for vector fields
 var SupportedSimilarityMetrics = map[string]struct{}{
 	EuclideanDistance: {},
+	InnerProduct:      {},
 	CosineSimilarity:  {},
+}
+
+func NormalizeVector(vector []float32) []float32 {
+	// first calculate the magnitude of the vector
+	var mag float32
+	for _, v := range vector {
+		mag += v * v
+	}
+	mag = float32(math.Sqrt(float64(mag)))
+	// zannot normalize a zero vector
+	if mag != 0 {
+		// normalize the vector
+		for i, v := range vector {
+			vector[i] = v / mag
+		}
+	}
+	return vector
 }
 
 // -----------------------------------------------------------------------------
