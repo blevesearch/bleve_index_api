@@ -50,17 +50,17 @@ var SupportedSimilarityMetrics = map[string]struct{}{
 
 func NormalizeVector(vector []float32) []float32 {
 	// first calculate the magnitude of the vector
-	var mag float32
+	var mag float64
 	for _, v := range vector {
-		mag += v * v
+		mag += float64(v) * float64(v)
 	}
-	mag = float32(math.Sqrt(float64(mag)))
 	// cannot normalize a zero vector
 	// if the magnitude is 1, then the vector is already normalized
 	if mag != 0 && mag != 1 {
+		mag = math.Sqrt(mag)
 		// normalize the vector
 		for i, v := range vector {
-			vector[i] = v / mag
+			vector[i] = float32(float64(v) / mag)
 		}
 	}
 	return vector
