@@ -56,6 +56,13 @@ type CopyIndex interface {
 	// to handle necessary bookkeeping, instead of using the regular IndexReader.
 	CopyReader() CopyReader
 }
+type EventIndex interface {
+	Index
+
+	OnIndexStart()
+
+	OnIndex()
+}
 
 type IndexReader interface {
 	TermFieldReader(ctx context.Context, term []byte, field string, includeFreq, includeNorm, includeTermVectors bool) (TermFieldReader, error)
