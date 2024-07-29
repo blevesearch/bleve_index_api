@@ -40,7 +40,7 @@ type Field interface {
 
 	EncodedFieldType() byte
 
-	Analyze()
+	Analyze() error
 
 	Options() FieldIndexingOptions
 
