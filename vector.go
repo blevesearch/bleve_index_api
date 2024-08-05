@@ -17,8 +17,6 @@
 
 package index
 
-import "math"
-
 type VectorField interface {
 	Vector() []float32
 	// Dimensionality of the vector
@@ -46,24 +44,6 @@ var SupportedSimilarityMetrics = map[string]struct{}{
 	EuclideanDistance: {},
 	InnerProduct:      {},
 	CosineSimilarity:  {},
-}
-
-func NormalizeVector(vector []float32) []float32 {
-	// first calculate the magnitude of the vector
-	var mag float64
-	for _, v := range vector {
-		mag += float64(v) * float64(v)
-	}
-	// cannot normalize a zero vector
-	// if the magnitude is 1, then the vector is already normalized
-	if mag != 0 && mag != 1 {
-		mag = math.Sqrt(mag)
-		// normalize the vector
-		for i, v := range vector {
-			vector[i] = float32(float64(v) / mag)
-		}
-	}
-	return vector
 }
 
 // -----------------------------------------------------------------------------
