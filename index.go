@@ -194,9 +194,9 @@ type TermFieldReader interface {
 }
 
 type DictEntry struct {
-	Term     string
-	Count    uint64
-	Distance uint8
+	Term         string
+	Count        uint64
+	EditDistance uint8
 }
 
 type FieldDict interface {
