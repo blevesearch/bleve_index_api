@@ -49,8 +49,10 @@ type VectorReader interface {
 
 type VectorIndexReader interface {
 	VectorReader(ctx context.Context, vector []float32, field string, k int64,
-		searchParams json.RawMessage, filterIDs []IndexInternalID,
-		requireFiltering bool) (VectorReader, error)
+		searchParams json.RawMessage) (VectorReader, error)
+
+	VectorReaderWithFilter(ctx context.Context, vector []float32, field string, k int64,
+		searchParams json.RawMessage, filterIDs []IndexInternalID) (VectorReader, error)
 }
 
 type VectorDoc struct {
