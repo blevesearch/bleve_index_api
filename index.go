@@ -105,6 +105,15 @@ type CopyReader interface {
 	CloseCopyReader() error
 }
 
+// TrackableIndexReader is an extended index reader for tracking bytes read during operations.
+type TrackableIndexReader interface {
+	IndexReader
+
+	SetTrackBytesRead(track bool)
+
+	TrackBytesRead() bool
+}
+
 type IndexReaderRegexp interface {
 	FieldDictRegexp(field string, regex string) (FieldDict, error)
 }
