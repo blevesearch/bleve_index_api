@@ -105,6 +105,11 @@ type CopyReader interface {
 	CloseCopyReader() error
 }
 
+type ThesaurusReader interface {
+	IndexReader
+	SynonymTermReader(ctx context.Context, term []byte, thesaurusName string) (SynonymTermReader, error)
+}
+
 type IndexReaderRegexp interface {
 	FieldDictRegexp(field string, regex string) (FieldDict, error)
 }
@@ -198,6 +203,12 @@ type TermFieldReader interface {
 	Count() uint64
 	Close() error
 
+	Size() int
+}
+
+type SynonymTermReader interface {
+	Next() (string, error)
+	Close() error
 	Size() int
 }
 
