@@ -16,17 +16,12 @@ package index
 
 type SynonymField interface {
 	Field
-	VisitSynonymDefinitions(visitor func(SynonymDefinition))
+	IterateSynonyms(visitor func(term string, synonyms []string))
 }
 
 type SynonymFieldVisitor func(SynonymField)
 
-type SynonymDefinition interface {
-	Term() string
-	Synonyms() []string
-}
-
 type SynonymDocument interface {
 	Document
-	VisitSynonymField(visitor SynonymFieldVisitor)
+	VisitSynonymFields(visitor SynonymFieldVisitor)
 }
