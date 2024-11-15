@@ -107,7 +107,7 @@ type CopyReader interface {
 
 type ThesaurusReader interface {
 	IndexReader
-	SynonymTermReader(ctx context.Context, term []byte, thesaurusName string) (SynonymTermReader, error)
+	SynonymTermReader(ctx context.Context, thesaurusName string, term []byte) (SynonymTermReader, error)
 }
 
 type IndexReaderRegexp interface {
