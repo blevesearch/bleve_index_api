@@ -105,7 +105,7 @@ type CopyReader interface {
 	CloseCopyReader() error
 }
 
-type ThesaurusReader interface {
+type SynonymReader interface {
 	IndexReader
 	SynonymTermReader(ctx context.Context, thesaurusName string, term []byte) (SynonymTermReader, error)
 }
