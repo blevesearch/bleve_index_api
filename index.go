@@ -105,17 +105,21 @@ type CopyReader interface {
 	CloseCopyReader() error
 }
 
-type SynonymReader interface {
-	IndexReader
-	SynonymTermReader(ctx context.Context, thesaurusName string, term []byte) (SynonymTermReader, error)
+type RegexAutomaton interface {
+	MatchesRegex(string) bool
 }
-
 type IndexReaderRegexp interface {
 	FieldDictRegexp(field string, regex string) (FieldDict, error)
+	FieldDictRegexpAutomaton(field string, regex string) (FieldDict, RegexAutomaton, error)
+}
+
+type FuzzyAutomaton interface {
+	MatchAndDistance(term string) (bool, uint8)
 }
 
 type IndexReaderFuzzy interface {
 	FieldDictFuzzy(field string, term string, fuzziness int, prefix string) (FieldDict, error)
+	FieldDictFuzzyAutomaton(field string, term string, fuzziness int, prefix string) (FieldDict, FuzzyAutomaton, error)
 }
 
 type IndexReaderContains interface {
@@ -206,12 +210,6 @@ type TermFieldReader interface {
 	Size() int
 }
 
-type SynonymTermReader interface {
-	Next() (string, error)
-	Close() error
-	Size() int
-}
-
 type DictEntry struct {
 	Term         string
 	Count        uint64
@@ -262,4 +260,28 @@ type DocValueReader interface {
 type IndexBuilder interface {
 	Index(doc Document) error
 	Close() error
+}
+
+type SynonymTermReader interface {
+	Next() (string, error)
+	Close() error
+	Size() int
+}
+
+type ThesaurusEntry struct {
+	Term string
+}
+
+type ThesaurusKeys interface {
+	Next() (*ThesaurusEntry, error)
+	Close() error
+}
+
+type ThesaurusReader interface {
+	IndexReader
+	SynonymTermReader(ctx context.Context, name string, term []byte) (SynonymTermReader, error)
+	ThesaurusKeys(name string) (ThesaurusKeys, error)
+	ThesaurusKeysFuzzy(name string, term string, fuzziness int, prefix string) (ThesaurusKeys, error)
+	ThesaurusKeysRegexp(name string, regex string) (ThesaurusKeys, error)
+	ThesaurusKeysPrefix(name string, termPrefix []byte) (ThesaurusKeys, error)
 }
