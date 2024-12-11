@@ -24,6 +24,23 @@ const (
 	SkipFreqNorm
 )
 
+const (
+	BM25Similarity = "bm25"
+
+	TFIDFSimilarity = "tfidf"
+)
+
+// similarity model just means the scoring mechanism used to rank documents fetched
+// for a query performed on a field. Default is the bm25 scoring but can be set
+// to other models like the legacy tf-idf.
+const DefaultSimilarityModel = BM25Similarity
+
+// Supported similarity models
+var SupportedSimilarityModels = map[string]struct{}{
+	BM25Similarity:  {},
+	TFIDFSimilarity: {},
+}
+
 func (o FieldIndexingOptions) IsIndexed() bool {
 	return o&IndexField != 0
 }
