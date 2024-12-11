@@ -108,6 +108,7 @@ type CopyReader interface {
 type RegexAutomaton interface {
 	MatchesRegex(string) bool
 }
+
 type IndexReaderRegexp interface {
 	FieldDictRegexp(field string, regex string) (FieldDict, error)
 	FieldDictRegexpAutomaton(field string, regex string) (FieldDict, RegexAutomaton, error)
@@ -262,7 +263,7 @@ type IndexBuilder interface {
 	Close() error
 }
 
-type SynonymTermReader interface {
+type ThesaurusTermReader interface {
 	Next() (string, error)
 	Close() error
 	Size() int
@@ -279,7 +280,7 @@ type ThesaurusKeys interface {
 
 type ThesaurusReader interface {
 	IndexReader
-	SynonymTermReader(ctx context.Context, name string, term []byte) (SynonymTermReader, error)
+	ThesaurusTermReader(ctx context.Context, name string, term []byte) (ThesaurusTermReader, error)
 	ThesaurusKeys(name string) (ThesaurusKeys, error)
 	ThesaurusKeysFuzzy(name string, term string, fuzziness int, prefix string) (ThesaurusKeys, error)
 	ThesaurusKeysRegexp(name string, regex string) (ThesaurusKeys, error)
