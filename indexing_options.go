@@ -25,20 +25,19 @@ const (
 )
 
 const (
-	BM25Similarity = "bm25"
-
-	TFIDFSimilarity = "tfidf"
+	BM25Scoring  = "bm25"
+	TFIDFScoring = "tfidf"
 )
 
-// similarity model just means the scoring mechanism used to rank documents fetched
+// Scoring model indicates the algorithm used to rank documents fetched
 // for a query performed on a field. Default is the bm25 scoring but can be set
 // to other models like the legacy tf-idf.
-const DefaultSimilarityModel = BM25Similarity
+const DefaultScoringModel = TFIDFScoring
 
 // Supported similarity models
-var SupportedSimilarityModels = map[string]struct{}{
-	BM25Similarity:  {},
-	TFIDFSimilarity: {},
+var SupportedScoringModels = map[string]struct{}{
+	BM25Scoring:  {},
+	TFIDFScoring: {},
 }
 
 func (o FieldIndexingOptions) IsIndexed() bool {
