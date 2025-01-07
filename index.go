@@ -240,6 +240,7 @@ type FieldDict interface {
 	Next() (*DictEntry, error)
 	Close() error
 
+	Cardinality() int
 	BytesRead() uint64
 }
 
