@@ -30,8 +30,7 @@ const (
 )
 
 // Scoring model indicates the algorithm used to rank documents fetched
-// for a query performed on a field. Default is the bm25 scoring but can be set
-// to other models like the legacy tf-idf.
+// for a query performed on a text field.
 const DefaultScoringModel = TFIDFScoring
 
 // Supported similarity models
