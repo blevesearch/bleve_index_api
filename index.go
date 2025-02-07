@@ -65,8 +65,8 @@ type EventIndex interface {
 	FireIndexEvent()
 }
 
-type FieldInfo struct {
-	All       bool
+type UpdateFieldInfo struct {
+	Deleted   bool
 	Store     bool
 	Index     bool
 	DocValues bool
@@ -74,7 +74,7 @@ type FieldInfo struct {
 
 type UpdateIndex interface {
 	Index
-	UpdateFields(fieldInfo map[string]*FieldInfo, updatedMapping []byte) error
+	UpdateFields(fieldInfo map[string]*UpdateFieldInfo, updatedMapping []byte) error
 }
 
 type IndexReader interface {
