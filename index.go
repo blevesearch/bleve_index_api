@@ -65,6 +65,18 @@ type EventIndex interface {
 	FireIndexEvent()
 }
 
+type UpdateFieldInfo struct {
+	Deleted   bool
+	Store     bool
+	Index     bool
+	DocValues bool
+}
+
+type UpdateIndex interface {
+	Index
+	UpdateFields(fieldInfo map[string]*UpdateFieldInfo, updatedMapping []byte) error
+}
+
 type IndexReader interface {
 	TermFieldReader(ctx context.Context, term []byte, field string, includeFreq, includeNorm, includeTermVectors bool) (TermFieldReader, error)
 
