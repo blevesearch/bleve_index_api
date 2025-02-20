@@ -14,7 +14,10 @@
 
 package index
 
-import "time"
+import (
+	"net"
+	"time"
+)
 
 type Document interface {
 	ID() string
@@ -81,6 +84,10 @@ type GeoPointField interface {
 
 type GeoShapeField interface {
 	GeoShape() (GeoJSON, error)
+}
+
+type IPField interface {
+	IP() (net.IP, error)
 }
 
 // TokenizableSpatialField is an optional interface for fields that
