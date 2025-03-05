@@ -33,7 +33,7 @@ type Document interface {
 
 	StoredFieldsBytes() uint64
 
-	Searchable() bool
+	Indexed() bool
 }
 
 type FieldVisitor func(Field)
