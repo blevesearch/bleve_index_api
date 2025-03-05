@@ -32,6 +32,8 @@ type Document interface {
 	AddIDField()
 
 	StoredFieldsBytes() uint64
+
+	Searchable() bool
 }
 
 type FieldVisitor func(Field)
