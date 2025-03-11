@@ -86,6 +86,7 @@ type GeoPointField interface {
 
 type GeoShapeField interface {
 	GeoShape() (GeoJSON, error)
+	EncodedShape() []byte
 }
 
 type IPField interface {
