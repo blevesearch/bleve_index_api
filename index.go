@@ -346,3 +346,11 @@ type ThesaurusReader interface {
 	// start with the given prefix.
 	ThesaurusKeysPrefix(name string, termPrefix []byte) (ThesaurusKeys, error)
 }
+
+// EligibleDocumentSelector selects documents based on specific eligibility criteria.
+// It can be extended with additional methods for filtering and retrieval.
+type EligibleDocumentSelector interface {
+	// EligibleDocNums returns a list of document numbers that are eligible within the specified segment.
+	// segmentID identifies the segment for which eligible document numbers are retrieved.
+	SegmentEligibleDocs(segmentID int) []uint64
+}
