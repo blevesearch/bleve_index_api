@@ -75,6 +75,7 @@ type UpdateFieldInfo struct {
 type UpdateIndex interface {
 	Index
 	UpdateFields(fieldInfo map[string]*UpdateFieldInfo, updatedMapping []byte) error
+	OpenMeta() error
 }
 
 type IndexReader interface {
