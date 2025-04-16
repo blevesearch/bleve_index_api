@@ -74,6 +74,7 @@ type IndexReader interface {
 
 	DocIDReaderOnly(ids []string) (DocIDReader, error)
 
+	FieldCardinality(field string) (int, error)
 	FieldDict(field string) (FieldDict, error)
 
 	// FieldDictRange is currently defined to include the start and end terms
