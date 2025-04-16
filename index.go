@@ -74,7 +74,6 @@ type IndexReader interface {
 
 	DocIDReaderOnly(ids []string) (DocIDReader, error)
 
-	FieldCardinality(field string) (int, error)
 	FieldDict(field string) (FieldDict, error)
 
 	// FieldDictRange is currently defined to include the start and end terms
@@ -95,6 +94,11 @@ type IndexReader interface {
 	InternalID(id string) (IndexInternalID, error)
 
 	Close() error
+}
+
+type BM25Reader interface {
+	IndexReader
+	FieldCardinality(field string) (int, error)
 }
 
 // CopyReader is an extended index reader for backup or online copy operations, replacing the regular index reader.
