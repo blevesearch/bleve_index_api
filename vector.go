@@ -25,8 +25,6 @@ type VectorField interface {
 	Similarity() string
 	// nlist/nprobe config (recall/latency) the index is optimized for
 	IndexOptimizedFor() string
-	// Vector types (float32 or binary)
-	VectorType() []string
 }
 
 // -----------------------------------------------------------------------------
