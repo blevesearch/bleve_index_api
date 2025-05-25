@@ -25,6 +25,8 @@ type VectorField interface {
 	Similarity() string
 	// nlist/nprobe config (recall/latency) the index is optimized for
 	IndexOptimizedFor() string
+	// Vector types (float32 or binary)
+	VectorType() []string
 }
 
 // -----------------------------------------------------------------------------
@@ -48,10 +50,30 @@ var SupportedVectorSimilarityMetrics = map[string]struct{}{
 
 // -----------------------------------------------------------------------------
 
+// Types of vector indexes
+const (
+	FloatVectorIndex = "float32"
+	BinaryVectorIndex = "binary"
+)
+
+var SupportedVectorIndexTypes = map[string]int{
+	FloatVectorIndex:    0,
+	BinaryVectorIndex:   1,
+}
+
+var SupportedVectorIndexTypesReverse = map[int]string{
+	0: FloatVectorIndex,
+	1: BinaryVectorIndex,
+}
+
+// -----------------------------------------------------------------------------
+
 const (
 	IndexOptimizedForRecall          = "recall"
 	IndexOptimizedForLatency         = "latency"
 	IndexOptimizedForMemoryEfficient = "memory-efficient"
+	IndexOptimizedForRecallBinary   = "recall,binary"
+	IndexOptimizedForLatencyBinary  = "latency,binary"
 )
 
 const DefaultIndexOptimization = IndexOptimizedForRecall
@@ -60,6 +82,8 @@ var SupportedVectorIndexOptimizations = map[string]int{
 	IndexOptimizedForRecall:          0,
 	IndexOptimizedForLatency:         1,
 	IndexOptimizedForMemoryEfficient: 2,
+	IndexOptimizedForRecallBinary:    3,
+	IndexOptimizedForLatencyBinary:   4,
 }
 
 // Reverse maps vector index optimizations': int -> string
@@ -67,4 +91,6 @@ var VectorIndexOptimizationsReverseLookup = map[int]string{
 	0: IndexOptimizedForRecall,
 	1: IndexOptimizedForLatency,
 	2: IndexOptimizedForMemoryEfficient,
+	3: IndexOptimizedForRecallBinary,
+	4: IndexOptimizedForLatencyBinary,
 }
