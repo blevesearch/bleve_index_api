@@ -36,6 +36,10 @@ type Document interface {
 	Indexed() bool
 }
 
+type DocumentAnalyzer interface {
+	Analyze(document Document) error
+}
+
 type FieldVisitor func(Field)
 
 type Field interface {
@@ -123,4 +127,10 @@ type SynonymDocument interface {
 	// VisitSynonymFields allows iteration over all synonym fields in the document.
 	// The provided visitor function is called for each synonym field.
 	VisitSynonymFields(visitor SynonymFieldVisitor)
+}
+
+type NestedField interface {
+	Field
+	NumChildren() int
+	VisitChildren(visitor func(arrayPosition int, document Document))
 }
