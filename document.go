@@ -138,10 +138,13 @@ type NestedDocument interface {
 	// VisitNestedFields allows iteration over all nested fields in the document.
 	// The provided visitor function is called for each nested field.
 	VisitNestedFields(visitor NestedFieldVisitor)
+
+	// returns the root document without any nested fields
+	WithoutNestedFields() Document
 }
 
 type NestedField interface {
 	Field
 	NumChildren() int
-	VisitChildren(visitor func(arrayPosition int, document NestedDocument))
+	VisitChildren(visitor func(arrayPosition int, document Document))
 }
