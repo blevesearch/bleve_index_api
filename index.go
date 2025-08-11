@@ -365,3 +365,36 @@ type EligibleDocumentSelector interface {
 	// This must be called after all eligible documents have been added.
 	SegmentEligibleDocs(segmentID int) []uint64
 }
+
+type NestedState interface {
+	// Append returns a new NestedState with the given path and array position added.
+	// It does NOT modify the original NestedState.
+	Append(path string, pos int) NestedState
+	// Root returns the root path of the NestedState.
+	// If the NestedState is empty, it returns an empty string.
+	Root() string
+	// Empty returns true if the NestedState is empty, meaning it has no paths or array positions.
+	Empty() bool
+	// Clear clears all paths and array positions for a NestedState.
+	Clear()
+	// Iterator returns a NestedIterator for iterating over the paths and array positions in the NestedState.
+	Iterator() NestedIterator
+}
+
+type NestedIterator interface {
+	// Next returns the next path and array position in the nested state.
+	// It returns false when there are no more elements to iterate over.
+	Next() (path string, arrayPos int, ok bool)
+	// HasNext returns true if there are more elements to iterate over.
+	HasNext() bool
+	// Reset resets the iterator to the beginning of the nested state.
+	Reset()
+	// Size returns the number of elements in the nested state.
+	Size() int
+}
+
+type NestedReader interface {
+	IndexReader
+
+	ChildCount(state NestedState, path string) int
+}
