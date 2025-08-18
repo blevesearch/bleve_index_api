@@ -365,3 +365,29 @@ type EligibleDocumentSelector interface {
 	// This must be called after all eligible documents have been added.
 	SegmentEligibleDocs(segmentID int) []uint64
 }
+
+// -----------------------------------------------------------------------------
+
+type TermFreq struct {
+	Term      string `json:"term"`
+	Frequency uint64 `json:"frequency"`
+}
+
+type CentroidCardinality struct {
+	Centroid    []float32 `json:"centroid"`
+	Cardinality uint64    `json:"cardinality"`
+}
+
+
+// IndexInsightsReader is an extended index reader that supports APIs which can advertise
+// details about content held within the index.
+type IndexInsightsReader interface {
+	IndexReader
+
+	// Obtains a maximum limit number of indexed tokens for the field sorted based on frequencies.
+	HighestFrequencyTerms(field string, limit int) (termFreqs []TermFreq, err error)
+
+	// Obtains a maximum limit number of centroid vectors from IVF indexes sorted based on
+	// cluster densities (or cardinalities)
+	HighestCardinalityCentroids(field string, limit int) (cenCards []CentroidCardinality, err error)
+}
