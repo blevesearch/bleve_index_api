@@ -36,6 +36,10 @@ type Document interface {
 	Indexed() bool
 }
 
+type DocumentAnalyzer interface {
+	Analyze(document Document) error
+}
+
 type FieldVisitor func(Field)
 
 type Field interface {
@@ -123,4 +127,12 @@ type SynonymDocument interface {
 	// VisitSynonymFields allows iteration over all synonym fields in the document.
 	// The provided visitor function is called for each synonym field.
 	VisitSynonymFields(visitor SynonymFieldVisitor)
+}
+
+// NestedDocument is a document that contains other documents inside it.
+type NestedDocument interface {
+	Document
+	// VisitNestedDocuments allows iteration over all nested documents in the document.
+	// The provided visitor function is called for each nested document.
+	VisitNestedDocuments(visitor func(doc Document))
 }
