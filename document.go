@@ -129,22 +129,10 @@ type SynonymDocument interface {
 	VisitSynonymFields(visitor SynonymFieldVisitor)
 }
 
-// NestedFieldVisitor is a function type used to visit a NestedField within a document.
-type NestedFieldVisitor func(NestedField)
-
-// NestedDocument represents a special type of document that contains nested fields.
+// NestedDocument is a document that contains other documents inside it.
 type NestedDocument interface {
 	Document
-	// VisitNestedFields allows iteration over all nested fields in the document.
-	// The provided visitor function is called for each nested field.
-	VisitNestedFields(visitor NestedFieldVisitor)
-
-	// returns the root document without any nested fields
-	WithoutNestedFields() Document
-}
-
-type NestedField interface {
-	Field
-	NumChildren() int
-	VisitChildren(visitor func(arrayPosition int, document Document))
+	// VisitNestedDocuments allows iteration over all nested documents in the document.
+	// The provided visitor function is called for each nested document.
+	VisitNestedDocuments(visitor func(doc Document))
 }

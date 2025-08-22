@@ -383,5 +383,5 @@ type NestedIterator interface {
 type NestedReader interface {
 	IndexReader
 
-	ChildCount(state NestedState, path string) int
+	Ancestors(id IndexInternalID) ([]IndexInternalID, error)
 }
