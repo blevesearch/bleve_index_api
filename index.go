@@ -385,9 +385,9 @@ type IndexInsightsReader interface {
 	IndexReader
 
 	// Obtains a maximum limit number of indexed tokens for the field sorted based on frequencies.
-	HighestFrequencyTerms(field string, limit int) (termFreqs []TermFreq, err error)
+	TermFrequencies(field string, limit int, descending bool) (termFreqs []TermFreq, err error)
 
 	// Obtains a maximum limit number of centroid vectors from IVF indexes sorted based on
 	// cluster densities (or cardinalities)
-	HighestCardinalityCentroids(field string, limit int) (cenCards []CentroidCardinality, err error)
+	CentroidCardinalities(field string, limit int, descending bool) (cenCards []CentroidCardinality, err error)
 }
