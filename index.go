@@ -17,6 +17,8 @@ package index
 import (
 	"bytes"
 	"context"
+	"encoding/binary"
+	"fmt"
 	"reflect"
 )
 
@@ -188,12 +190,31 @@ func (tfv *TermFieldVector) Size() int {
 // IndexInternalID is an opaque document identifier interal to the index impl
 type IndexInternalID []byte
 
+func NewIndexInternalID(buf []byte, in uint64) IndexInternalID {
+	if len(buf) != 8 {
+		if cap(buf) >= 8 {
+			buf = buf[0:8]
+		} else {
+			buf = make([]byte, 8)
+		}
+	}
+	binary.BigEndian.PutUint64(buf, in)
+	return buf
+}
+
 func (id IndexInternalID) Equals(other IndexInternalID) bool {
 	return id.Compare(other) == 0
 }
 
 func (id IndexInternalID) Compare(other IndexInternalID) int {
 	return bytes.Compare(id, other)
+}
+
+func (id IndexInternalID) Value() (uint64, error) {
+	if len(id) != 8 {
+		return 0, fmt.Errorf("wrong len for IndexInternalID: %q", id)
+	}
+	return binary.BigEndian.Uint64(id), nil
 }
 
 type TermFieldDoc struct {
