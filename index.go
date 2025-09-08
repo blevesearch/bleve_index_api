@@ -374,10 +374,10 @@ type TermFreq struct {
 }
 
 type CentroidCardinality struct {
+	Index       string    `json:"string"`
 	Centroid    []float32 `json:"centroid"`
 	Cardinality uint64    `json:"cardinality"`
 }
-
 
 // IndexInsightsReader is an extended index reader that supports APIs which can advertise
 // details about content held within the index.
