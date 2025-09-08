@@ -374,7 +374,7 @@ type TermFreq struct {
 }
 
 type CentroidCardinality struct {
-	Index       string    `json:"string"`
+	Index       string    `json:"index"`
 	Centroid    []float32 `json:"centroid"`
 	Cardinality uint64    `json:"cardinality"`
 }
