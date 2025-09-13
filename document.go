@@ -36,10 +36,6 @@ type Document interface {
 	Indexed() bool
 }
 
-type DocumentAnalyzer interface {
-	Analyze(document Document) error
-}
-
 type FieldVisitor func(Field)
 
 type Field interface {
