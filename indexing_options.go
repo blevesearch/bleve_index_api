@@ -22,6 +22,7 @@ const (
 	IncludeTermVectors
 	DocValues
 	SkipFreqNorm
+	GPU
 )
 
 const (
@@ -59,6 +60,10 @@ func (o FieldIndexingOptions) SkipFreqNorm() bool {
 	return o&SkipFreqNorm != 0
 }
 
+func (o FieldIndexingOptions) UseGPU() bool {
+	return o&GPU != 0
+}
+
 func (o FieldIndexingOptions) String() string {
 	rv := ""
 	if o.IsIndexed() {
@@ -87,6 +92,12 @@ func (o FieldIndexingOptions) String() string {
 			rv += ", "
 		}
 		rv += "FN"
+	}
+	if !o.UseGPU() {
+		if rv != "" {
+			rv += ", "
+		}
+		rv += "GPU"
 	}
 	return rv
 }
