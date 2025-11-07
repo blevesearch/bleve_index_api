@@ -25,8 +25,8 @@ type VectorField interface {
 	Similarity() string
 	// nlist/nprobe config (recall/latency) the index is optimized for
 	IndexOptimizedFor() string
-	// Whether to use GPU for indexing/searching
-	GPU() bool
+	// Options used for the vector field
+	Options() FieldIndexingOptions
 }
 
 // -----------------------------------------------------------------------------
@@ -84,14 +84,4 @@ func OptimizationRequiresBinaryIndex(optimization string) bool {
 	default:
 		return false
 	}
-}
-
-type VectorIndexOptions uint64
-
-const (
-	FlagUseGPU VectorIndexOptions = 1 << iota
-)
-
-func (vo VectorIndexOptions) UseGPU() bool {
-	return (vo & FlagUseGPU) != 0
 }
