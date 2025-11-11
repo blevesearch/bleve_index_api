@@ -416,6 +416,8 @@ type IndexInsightsReader interface {
 // NestedReader is an extended index reader that supports hierarchical document structures.
 type NestedReader interface {
 	IndexReader
+	// HasNestedDocs checks if the index has any documents with ancestry (i.e., nested documents).
+	HasNestedDocs() bool
 	// Ancestors returns the ancestral chain for a given document ID in the index.
 	// For nested documents, this method retrieves all parent documents in the hierarchy
 	// leading up to the specified document ID.
