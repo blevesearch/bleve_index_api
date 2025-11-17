@@ -387,7 +387,6 @@ type EligibleDocumentSelector interface {
 	SegmentEligibleDocs(segmentID int) []uint64
 }
 
-<<<<<<< HEAD
 // -----------------------------------------------------------------------------
 
 type TermFreq struct {
@@ -412,7 +411,9 @@ type IndexInsightsReader interface {
 	// Obtains a maximum limit number of centroid vectors from IVF indexes sorted based on
 	// cluster densities (or cardinalities)
 	CentroidCardinalities(field string, limit int, descending bool) (cenCards []CentroidCardinality, err error)
-=======
+}
+
+// -----------------------------------------------------------------------------
 // NestedReader is an extended index reader that supports hierarchical document structures.
 type NestedReader interface {
 	IndexReader
@@ -420,5 +421,4 @@ type NestedReader interface {
 	// For nested documents, this method retrieves all parent documents in the hierarchy
 	// leading up to the specified document ID.
 	Ancestors(id IndexInternalID) ([]IndexInternalID, error)
->>>>>>> c63531c (cleanup)
 }
