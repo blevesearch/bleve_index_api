@@ -93,7 +93,7 @@ func (o FieldIndexingOptions) String() string {
 		}
 		rv += "FN"
 	}
-	if !o.UseGPU() {
+	if o.UseGPU() {
 		if rv != "" {
 			rv += ", "
 		}
