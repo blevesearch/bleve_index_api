@@ -118,7 +118,7 @@ func (o FieldIndexingOptions) String() string {
 		}
 		rv += "DV_CHUNKING"
 	}
-	if !o.UseGPU() {
+	if o.UseGPU() {
 		if rv != "" {
 			rv += ", "
 		}
