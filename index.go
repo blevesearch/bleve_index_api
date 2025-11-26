@@ -419,6 +419,41 @@ type NestedReader interface {
 	IndexReader
 	// Ancestors returns the ancestral chain for a given document ID in the index.
 	// For nested documents, this method retrieves all parent documents in the hierarchy
-	// leading up to the specified document ID.
-	Ancestors(id IndexInternalID) ([]IndexInternalID, error)
+	// leading up to the root document ID.
+	Ancestors(id IndexInternalID) ([]AncestorID, error)
+}
+
+// AncestorID represents the identifier of an ancestor document in an ancestor chain.
+type AncestorID uint64
+
+// NewAncestorID creates a new AncestorID from the given uint64 value.
+func NewAncestorID(val uint64) AncestorID {
+	return AncestorID(val)
+}
+
+// Compare compares two AncestorID values.
+func (a AncestorID) Compare(b AncestorID) int {
+	switch {
+	case a < b:
+		return -1
+	case a > b:
+		return 1
+	default:
+		return 0
+	}
+}
+
+// Equals checks if two AncestorID values are equal.
+func (a AncestorID) Equals(b AncestorID) bool {
+	return a == b
+}
+
+// Add returns a new AncestorID by adding the given uint64 value to the current AncestorID.
+func (a AncestorID) Add(n uint64) AncestorID {
+	return AncestorID(uint64(a) + n)
+}
+
+// ToIndexInternalID converts the AncestorID to an IndexInternalID.
+func (a AncestorID) ToIndexInternalID() IndexInternalID {
+	return NewIndexInternalID(nil, uint64(a))
 }
