@@ -454,6 +454,6 @@ func (a AncestorID) Add(n uint64) AncestorID {
 }
 
 // ToIndexInternalID converts the AncestorID to an IndexInternalID.
-func (a AncestorID) ToIndexInternalID() IndexInternalID {
-	return NewIndexInternalID(nil, uint64(a))
+func (a AncestorID) ToIndexInternalID(prealloc IndexInternalID) IndexInternalID {
+	return NewIndexInternalID(prealloc, uint64(a))
 }
