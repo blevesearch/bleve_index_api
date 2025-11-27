@@ -420,7 +420,7 @@ type NestedReader interface {
 	// Ancestors returns the ancestral chain for a given document ID in the index.
 	// For nested documents, this method retrieves all parent documents in the hierarchy
 	// leading up to the root document ID.
-	Ancestors(id IndexInternalID) ([]AncestorID, error)
+	Ancestors(id IndexInternalID, prealloc []AncestorID) ([]AncestorID, error)
 }
 
 // AncestorID represents the identifier of an ancestor document in an ancestor chain.
