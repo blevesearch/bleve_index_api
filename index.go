@@ -202,6 +202,10 @@ func NewIndexInternalID(buf []byte, in uint64) IndexInternalID {
 	return buf
 }
 
+func NewIndexInternalIDFrom(buf IndexInternalID, other IndexInternalID) IndexInternalID {
+	return append(buf, other...)
+}
+
 func (id IndexInternalID) Equals(other IndexInternalID) bool {
 	return id.Compare(other) == 0
 }
