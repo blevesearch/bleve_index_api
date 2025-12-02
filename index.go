@@ -187,7 +187,7 @@ func (tfv *TermFieldVector) Size() int {
 		len(tfv.Field) + len(tfv.ArrayPositions)*sizeOfUint64
 }
 
-// IndexInternalID is an opaque document identifier interal to the index impl
+// IndexInternalID is an opaque document identifier internal to the index impl
 type IndexInternalID []byte
 
 // NewIndexInternalID encodes a uint64 into an 8-byte big-endian ID, reusing `buf` when possible.
