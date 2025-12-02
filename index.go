@@ -190,6 +190,7 @@ func (tfv *TermFieldVector) Size() int {
 // IndexInternalID is an opaque document identifier interal to the index impl
 type IndexInternalID []byte
 
+// NewIndexInternalID encodes a uint64 into an 8-byte big-endian ID, reusing `buf` when possible.
 func NewIndexInternalID(buf []byte, in uint64) IndexInternalID {
 	if len(buf) != 8 {
 		if cap(buf) >= 8 {
@@ -202,18 +203,22 @@ func NewIndexInternalID(buf []byte, in uint64) IndexInternalID {
 	return buf
 }
 
+// NewIndexInternalIDFrom creates a new IndexInternalID by copying from `other`, reusing `buf` when possible.
 func NewIndexInternalIDFrom(buf IndexInternalID, other IndexInternalID) IndexInternalID {
 	return append(buf, other...)
 }
 
+// Equals checks if two IndexInternalID values are equal.
 func (id IndexInternalID) Equals(other IndexInternalID) bool {
 	return id.Compare(other) == 0
 }
 
+// Compare compares two IndexInternalID values, inherently comparing the encoded uint64 values.
 func (id IndexInternalID) Compare(other IndexInternalID) int {
 	return bytes.Compare(id, other)
 }
 
+// Value returns the uint64 value encoded in the IndexInternalID.
 func (id IndexInternalID) Value() (uint64, error) {
 	if len(id) != 8 {
 		return 0, fmt.Errorf("wrong len for IndexInternalID: %q", id)
