@@ -205,6 +205,7 @@ func NewIndexInternalID(buf []byte, in uint64) IndexInternalID {
 
 // NewIndexInternalIDFrom creates a new IndexInternalID by copying from `other`, reusing `buf` when possible.
 func NewIndexInternalIDFrom(buf IndexInternalID, other IndexInternalID) IndexInternalID {
+	buf = buf[:0]
 	return append(buf, other...)
 }
 
