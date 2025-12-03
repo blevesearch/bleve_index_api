@@ -21,3 +21,8 @@ import (
 type Directory interface {
 	GetWriter(filePath string) (io.WriteCloser, error)
 }
+
+type IndexDirectory interface {
+	Directory
+	UpdateFileInBolt(key []byte, value []byte) error
+}
