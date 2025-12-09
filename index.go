@@ -214,7 +214,9 @@ func (id IndexInternalID) Equals(other IndexInternalID) bool {
 	return id.Compare(other) == 0
 }
 
-// Compare compares two IndexInternalID values, inherently comparing the encoded uint64 values.
+// Compare compares two IndexInternalID values lexicographically. For IDs created
+// by NewIndexInternalID, this comparison order matches the order of their uint64 values
+// due to big-endian encoding.
 func (id IndexInternalID) Compare(other IndexInternalID) int {
 	return bytes.Compare(id, other)
 }
