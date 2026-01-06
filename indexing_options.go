@@ -22,6 +22,8 @@ const (
 	IncludeTermVectors
 	DocValues
 	SkipFreqNorm
+	SkipSnappy
+	SkipChunking
 )
 
 const (
@@ -59,6 +61,14 @@ func (o FieldIndexingOptions) SkipFreqNorm() bool {
 	return o&SkipFreqNorm != 0
 }
 
+func (o FieldIndexingOptions) SkipSnappy() bool {
+	return o&SkipSnappy != 0
+}
+
+func (o FieldIndexingOptions) SkipChunking() bool {
+	return o&SkipChunking != 0
+}
+
 func (o FieldIndexingOptions) String() string {
 	rv := ""
 	if o.IsIndexed() {
@@ -87,6 +97,18 @@ func (o FieldIndexingOptions) String() string {
 			rv += ", "
 		}
 		rv += "FN"
+	}
+	if !o.SkipSnappy() {
+		if rv != "" {
+			rv += ", "
+		}
+		rv += "SNAPPY"
+	}
+	if !o.SkipChunking() {
+		if rv != "" {
+			rv += ", "
+		}
+		rv += "CHUNKING"
 	}
 	return rv
 }

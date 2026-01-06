@@ -286,6 +286,9 @@ type DocIDReader interface {
 	Close() error
 }
 
+// Sentinel value used to separate terms in doc values encoding
+const DocValueTermSeparator byte = 0xff
+
 type DocValueVisitor func(field string, term []byte)
 
 type DocValueReader interface {
