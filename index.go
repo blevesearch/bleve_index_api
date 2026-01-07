@@ -365,7 +365,7 @@ type EligibleDocumentList interface {
 	// Iterator returns an iterator for the eligible document IDs.
 	Iterator() EligibleDocumentIterator
 	// Count returns the number of eligible document IDs.
-	Count() int
+	Count() uint64
 }
 
 // EligibleDocumentSelector filters documents based on specific eligibility criteria.
@@ -376,6 +376,7 @@ type EligibleDocumentSelector interface {
 	AddEligibleDocumentMatch(id IndexInternalID) error
 
 	// SegmentEligibleDocuments returns an EligibleDocumentList for the specified segment.
+	// This must be called after all eligible documents have been added via AddEligibleDocumentMatch.
 	SegmentEligibleDocuments(segmentID int) EligibleDocumentList
 }
 
