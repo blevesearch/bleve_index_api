@@ -353,6 +353,21 @@ type ThesaurusReader interface {
 	ThesaurusKeysPrefix(name string, termPrefix []byte) (ThesaurusKeys, error)
 }
 
+// EligibleDocumentIterator provides an interface to iterate over eligible document IDs.
+type EligibleDocumentIterator interface {
+	// Next returns the next document ID and whether it exists.
+	// When ok is false, iteration is complete.
+	Next() (id uint64, ok bool)
+}
+
+// EligibleDocumentList represents a list of eligible document IDs for filtering.
+type EligibleDocumentList interface {
+	// Iterator returns an iterator for the eligible document IDs.
+	Iterator() EligibleDocumentIterator
+	// Count returns the number of eligible document IDs.
+	Count() uint64
+}
+
 // EligibleDocumentSelector filters documents based on specific eligibility criteria.
 // It can be extended with additional methods for filtering and retrieval.
 type EligibleDocumentSelector interface {
@@ -360,10 +375,9 @@ type EligibleDocumentSelector interface {
 	// id is the internal identifier of the document to be added.
 	AddEligibleDocumentMatch(id IndexInternalID) error
 
-	// SegmentEligibleDocs returns a list of eligible document IDs within a given segment.
-	// segmentID identifies the segment for which eligible documents are retrieved.
-	// This must be called after all eligible documents have been added.
-	SegmentEligibleDocs(segmentID int) []uint64
+	// SegmentEligibleDocuments returns an EligibleDocumentList for the specified segment.
+	// This must be called after all eligible documents have been added via AddEligibleDocumentMatch.
+	SegmentEligibleDocuments(segmentID int) EligibleDocumentList
 }
 
 // -----------------------------------------------------------------------------
