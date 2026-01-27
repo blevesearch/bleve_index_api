@@ -35,6 +35,9 @@ const (
 // for a query performed on a text field.
 const DefaultScoringModel = TFIDFScoring
 
+// Sentinel value used to separate terms in doc values encoding
+const DocValueTermSeparator byte = 0xff
+
 // Supported similarity models
 var SupportedScoringModels = map[string]struct{}{
 	BM25Scoring:  {},
