@@ -22,6 +22,8 @@ const (
 	IncludeTermVectors
 	DocValues
 	SkipFreqNorm
+	SkipSnappy
+	SkipChunking
 )
 
 const (
@@ -32,6 +34,9 @@ const (
 // Scoring model indicates the algorithm used to rank documents fetched
 // for a query performed on a text field.
 const DefaultScoringModel = TFIDFScoring
+
+// Sentinel value used to separate terms in doc values encoding
+const DocValueTermSeparator byte = 0xff
 
 // Supported similarity models
 var SupportedScoringModels = map[string]struct{}{
@@ -57,6 +62,14 @@ func (o FieldIndexingOptions) IncludeDocValues() bool {
 
 func (o FieldIndexingOptions) SkipFreqNorm() bool {
 	return o&SkipFreqNorm != 0
+}
+
+func (o FieldIndexingOptions) SkipSnappy() bool {
+	return o&SkipSnappy != 0
+}
+
+func (o FieldIndexingOptions) SkipChunking() bool {
+	return o&SkipChunking != 0
 }
 
 func (o FieldIndexingOptions) String() string {
@@ -87,6 +100,18 @@ func (o FieldIndexingOptions) String() string {
 			rv += ", "
 		}
 		rv += "FN"
+	}
+	if !o.SkipSnappy() {
+		if rv != "" {
+			rv += ", "
+		}
+		rv += "SNAPPY"
+	}
+	if !o.SkipChunking() {
+		if rv != "" {
+			rv += ", "
+		}
+		rv += "CHUNKING"
 	}
 	return rv
 }
