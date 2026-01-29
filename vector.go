@@ -86,3 +86,5 @@ func OptimizationRequiresBinaryIndex(optimization string) bool {
 
 // to be prefixed to the key before indexing?
 const TrainDataPrefix = "_train:"
+
+const CentroidIndexFileName = "centroid_index"
