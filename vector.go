@@ -71,3 +71,5 @@ var VectorIndexOptimizationsReverseLookup = map[int]string{
 
 // to be prefixed to the key before indexing?
 const TrainDataPrefix = "_train:"
+
+const CentroidIndexFileName = "centroid_index"
