@@ -18,8 +18,6 @@
 package index
 
 type VectorField interface {
-	// Name of the vector field
-	Name() string
 	// The vector data
 	Vector() []float32
 	// Dimensionality of the vector
