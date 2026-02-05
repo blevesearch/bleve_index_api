@@ -18,6 +18,7 @@
 package index
 
 type VectorField interface {
+	// The vector data
 	Vector() []float32
 	// Dimensionality of the vector
 	Dims() int
