@@ -22,8 +22,8 @@ const (
 	IncludeTermVectors
 	DocValues
 	SkipFreqNorm
-	SkipSnappy
-	SkipChunking
+	SkipDVCompression
+	SkipDVChunking
 )
 
 const (
@@ -64,12 +64,12 @@ func (o FieldIndexingOptions) SkipFreqNorm() bool {
 	return o&SkipFreqNorm != 0
 }
 
-func (o FieldIndexingOptions) SkipSnappy() bool {
-	return o&SkipSnappy != 0
+func (o FieldIndexingOptions) SkipDVCompression() bool {
+	return o&SkipDVCompression != 0
 }
 
-func (o FieldIndexingOptions) SkipChunking() bool {
-	return o&SkipChunking != 0
+func (o FieldIndexingOptions) SkipDVChunking() bool {
+	return o&SkipDVChunking != 0
 }
 
 func (o FieldIndexingOptions) String() string {
@@ -101,17 +101,17 @@ func (o FieldIndexingOptions) String() string {
 		}
 		rv += "FN"
 	}
-	if !o.SkipSnappy() {
+	if !o.SkipDVCompression() {
 		if rv != "" {
 			rv += ", "
 		}
-		rv += "SNAPPY"
+		rv += "DV_COMPRESSION"
 	}
-	if !o.SkipChunking() {
+	if !o.SkipDVChunking() {
 		if rv != "" {
 			rv += ", "
 		}
-		rv += "CHUNKING"
+		rv += "DV_CHUNKING"
 	}
 	return rv
 }
