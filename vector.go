@@ -52,7 +52,7 @@ const (
 	IndexOptimizedForRecall          = "recall"
 	IndexOptimizedForLatency         = "latency"
 	IndexOptimizedForMemoryEfficient = "memory-efficient"
-	IndexOptimizedForBinary          = "binary"
+	IndexOptimizedWithBivfFlat       = "bivf-flat"
 )
 
 const DefaultIndexOptimization = IndexOptimizedForRecall
@@ -61,7 +61,7 @@ var SupportedVectorIndexOptimizations = map[string]int{
 	IndexOptimizedForRecall:          0,
 	IndexOptimizedForLatency:         1,
 	IndexOptimizedForMemoryEfficient: 2,
-	IndexOptimizedForBinary:          3,
+	IndexOptimizedWithBivfFlat:       3,
 }
 
 // Reverse maps vector index optimizations': int -> string
@@ -69,5 +69,5 @@ var VectorIndexOptimizationsReverseLookup = map[int]string{
 	0: IndexOptimizedForRecall,
 	1: IndexOptimizedForLatency,
 	2: IndexOptimizedForMemoryEfficient,
-	3: IndexOptimizedForBinary,
+	3: IndexOptimizedWithBivfFlat,
 }
