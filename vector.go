@@ -71,3 +71,8 @@ var VectorIndexOptimizationsReverseLookup = map[int]string{
 	2: IndexOptimizedForMemoryEfficient,
 	3: IndexOptimizedWithBivfFlat,
 }
+
+// to be prefixed to the key before indexing?
+const TrainDataPrefix = "_train:"
+
+const CentroidIndexFileName = "centroid_index"
