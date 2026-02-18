@@ -25,6 +25,8 @@ const (
 	SkipDVCompression
 	SkipDVChunking
 	GPU
+	SkipDVCompression
+	SkipDVChunking
 )
 
 const (
@@ -77,6 +79,14 @@ func (o FieldIndexingOptions) UseGPU() bool {
 	return o&GPU != 0
 }
 
+func (o FieldIndexingOptions) SkipDVCompression() bool {
+	return o&SkipDVCompression != 0
+}
+
+func (o FieldIndexingOptions) SkipDVChunking() bool {
+	return o&SkipDVChunking != 0
+}
+
 func (o FieldIndexingOptions) String() string {
 	rv := ""
 	if o.IsIndexed() {
@@ -123,6 +133,18 @@ func (o FieldIndexingOptions) String() string {
 			rv += ", "
 		}
 		rv += "GPU"
+	}
+	if !o.SkipDVCompression() {
+		if rv != "" {
+			rv += ", "
+		}
+		rv += "DV_COMPRESSION"
+	}
+	if !o.SkipDVChunking() {
+		if rv != "" {
+			rv += ", "
+		}
+		rv += "DV_CHUNKING"
 	}
 	return rv
 }
