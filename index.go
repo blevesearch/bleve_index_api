@@ -50,11 +50,6 @@ type Index interface {
 	StatsMap() map[string]interface{}
 }
 
-type VectorIndex interface {
-	Index
-	Train(*Batch) error
-}
-
 // CopyIndex is an extended index that supports copying to a new location online.
 // Use the CopyReader method to obtain a reader for initiating the copy operation.
 type CopyIndex interface {
