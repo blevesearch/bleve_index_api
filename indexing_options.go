@@ -22,6 +22,8 @@ const (
 	IncludeTermVectors
 	DocValues
 	SkipFreqNorm
+	SkipDVCompression
+	SkipDVChunking
 	GPU
 )
 
@@ -33,6 +35,9 @@ const (
 // Scoring model indicates the algorithm used to rank documents fetched
 // for a query performed on a text field.
 const DefaultScoringModel = TFIDFScoring
+
+// Sentinel value used to separate terms in doc values encoding
+const DocValueTermSeparator byte = 0xff
 
 // Supported similarity models
 var SupportedScoringModels = map[string]struct{}{
@@ -58,6 +63,14 @@ func (o FieldIndexingOptions) IncludeDocValues() bool {
 
 func (o FieldIndexingOptions) SkipFreqNorm() bool {
 	return o&SkipFreqNorm != 0
+}
+
+func (o FieldIndexingOptions) SkipDVCompression() bool {
+	return o&SkipDVCompression != 0
+}
+
+func (o FieldIndexingOptions) SkipDVChunking() bool {
+	return o&SkipDVChunking != 0
 }
 
 func (o FieldIndexingOptions) UseGPU() bool {
@@ -92,6 +105,18 @@ func (o FieldIndexingOptions) String() string {
 			rv += ", "
 		}
 		rv += "FN"
+	}
+	if !o.SkipDVCompression() {
+		if rv != "" {
+			rv += ", "
+		}
+		rv += "DV_COMPRESSION"
+	}
+	if !o.SkipDVChunking() {
+		if rv != "" {
+			rv += ", "
+		}
+		rv += "DV_CHUNKING"
 	}
 	if o.UseGPU() {
 		if rv != "" {
