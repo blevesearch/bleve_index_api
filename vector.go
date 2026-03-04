@@ -74,3 +74,11 @@ var VectorIndexOptimizationsReverseLookup = map[int]string{
 	3: IndexOptimizedWithBivfForLatency,
 	4: IndexOptimizedWithBivfForDisk,
 }
+
+func OptimizationRequiresBinaryIndex(optimization string) bool {
+	if optimization == IndexOptimizedWithBivfForLatency ||
+		optimization == IndexOptimizedWithBivfForDisk {
+		return true
+	}
+	return false
+}
