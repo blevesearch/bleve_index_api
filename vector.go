@@ -84,3 +84,11 @@ func OptimizationRequiresBinaryIndex(optimization string) bool {
 		return false
 	}
 }
+
+func OptimizationRequiresBinaryIndex(optimization string) bool {
+	if optimization == IndexOptimizedWithBivfForLatency ||
+		optimization == IndexOptimizedWithBivfForDisk {
+		return true
+	}
+	return false
+}
