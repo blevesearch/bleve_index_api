@@ -53,7 +53,8 @@ const (
 	IndexOptimizedForRecall          = "recall"
 	IndexOptimizedForLatency         = "latency"
 	IndexOptimizedForMemoryEfficient = "memory-efficient"
-	IndexOptimizedWithBivfFlat       = "bivf-flat"
+	IndexOptimizedWithBivfForLatency = "bivf-flat-latency"
+	IndexOptimizedWithBivfForDisk    = "bivf-flat-disk"
 )
 
 const DefaultIndexOptimization = IndexOptimizedForRecall
@@ -62,7 +63,8 @@ var SupportedVectorIndexOptimizations = map[string]int{
 	IndexOptimizedForRecall:          0,
 	IndexOptimizedForLatency:         1,
 	IndexOptimizedForMemoryEfficient: 2,
-	IndexOptimizedWithBivfFlat:       3,
+	IndexOptimizedWithBivfForLatency: 3,
+	IndexOptimizedWithBivfForDisk:    4,
 }
 
 // Reverse maps vector index optimizations': int -> string
@@ -70,5 +72,14 @@ var VectorIndexOptimizationsReverseLookup = map[int]string{
 	0: IndexOptimizedForRecall,
 	1: IndexOptimizedForLatency,
 	2: IndexOptimizedForMemoryEfficient,
-	3: IndexOptimizedWithBivfFlat,
+	3: IndexOptimizedWithBivfForLatency,
+	4: IndexOptimizedWithBivfForDisk,
+}
+
+func OptimizationRequiresBinaryIndex(optimization string) bool {
+	if optimization == IndexOptimizedWithBivfForLatency ||
+		optimization == IndexOptimizedWithBivfForDisk {
+		return true
+	}
+	return false
 }
