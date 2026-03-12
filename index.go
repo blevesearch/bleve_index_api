@@ -50,6 +50,11 @@ type Index interface {
 	StatsMap() map[string]interface{}
 }
 
+type VectorIndex interface {
+	Index
+	Train(*Batch) error
+}
+
 // CopyIndex is an extended index that supports copying to a new location online.
 // Use the CopyReader method to obtain a reader for initiating the copy operation.
 type CopyIndex interface {
@@ -57,6 +62,12 @@ type CopyIndex interface {
 	// Obtain a copy reader for the online copy/backup operation,
 	// to handle necessary bookkeeping, instead of using the regular IndexReader.
 	CopyReader() CopyReader
+}
+
+type IndexFileCopyable interface {
+	Index
+	UpdateFileInBolt(key []byte, value []byte) error //dest index
+	CopyFile(file string, d IndexDirectory) error    // source index
 }
 
 // EventIndex is an optional interface for exposing the support for firing event
