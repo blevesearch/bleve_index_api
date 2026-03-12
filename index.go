@@ -80,6 +80,12 @@ type UpdateIndex interface {
 	OpenMeta() error
 }
 
+type CustomizableIndex interface {
+	Index
+	KeysInUse() (map[string]struct{}, error)
+	DropKeys(ids map[string]struct{}) error
+}
+
 type IndexReader interface {
 	TermFieldReader(ctx context.Context, term []byte, field string, includeFreq, includeNorm, includeTermVectors bool) (TermFieldReader, error)
 
