@@ -52,8 +52,8 @@ const (
 	IndexOptimizedForRecall          = "recall"
 	IndexOptimizedForLatency         = "latency"
 	IndexOptimizedForMemoryEfficient = "memory-efficient"
-	IndexOptimizedWithBivfForLatency = "bivf-flat-latency"
-	IndexOptimizedWithBivfForDisk    = "bivf-flat-disk"
+	IndexUsesBivfWithBackingFlat     = "bivf-flat"
+	IndexUsesBivfWithBackingSQ8      = "bivf-sq8"
 )
 
 const DefaultIndexOptimization = IndexOptimizedForRecall
@@ -62,8 +62,8 @@ var SupportedVectorIndexOptimizations = map[string]int{
 	IndexOptimizedForRecall:          0,
 	IndexOptimizedForLatency:         1,
 	IndexOptimizedForMemoryEfficient: 2,
-	IndexOptimizedWithBivfForLatency: 3,
-	IndexOptimizedWithBivfForDisk:    4,
+	IndexUsesBivfWithBackingFlat:     3,
+	IndexUsesBivfWithBackingSQ8:      4,
 }
 
 // Reverse maps vector index optimizations': int -> string
@@ -71,13 +71,13 @@ var VectorIndexOptimizationsReverseLookup = map[int]string{
 	0: IndexOptimizedForRecall,
 	1: IndexOptimizedForLatency,
 	2: IndexOptimizedForMemoryEfficient,
-	3: IndexOptimizedWithBivfForLatency,
-	4: IndexOptimizedWithBivfForDisk,
+	3: IndexUsesBivfWithBackingFlat,
+	4: IndexUsesBivfWithBackingSQ8,
 }
 
 func OptimizationRequiresBinaryIndex(optimization string) bool {
-	if optimization == IndexOptimizedWithBivfForLatency ||
-		optimization == IndexOptimizedWithBivfForDisk {
+	if optimization == IndexUsesBivfWithBackingFlat ||
+		optimization == IndexUsesBivfWithBackingSQ8 {
 		return true
 	}
 	return false
