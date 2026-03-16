@@ -76,9 +76,10 @@ var VectorIndexOptimizationsReverseLookup = map[int]string{
 }
 
 func OptimizationRequiresBinaryIndex(optimization string) bool {
-	if optimization == IndexBIVFWithBackingFlat ||
-		optimization == IndexBIVFWithBackingSQ8 {
+	switch optimization {
+	case IndexBIVFWithBackingFlat, IndexBIVFWithBackingSQ8:
 		return true
+	default:
+		return false
 	}
-	return false
 }
