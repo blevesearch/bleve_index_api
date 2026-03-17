@@ -49,11 +49,11 @@ var SupportedVectorSimilarityMetrics = map[string]struct{}{
 // -----------------------------------------------------------------------------
 
 const (
-	IndexOptimizedForRecall          = "recall"
-	IndexOptimizedForLatency         = "latency"
-	IndexOptimizedForMemoryEfficient = "memory-efficient"
-	IndexOptimizedWithBivfForLatency = "bivf-flat-latency"
-	IndexOptimizedWithBivfForDisk    = "bivf-flat-disk"
+	IndexOptimizedForRecall          = "recall"           // Flat or IVF,SQ8 indexes
+	IndexOptimizedForLatency         = "latency"          // Flat or IVF,SQ8 indexes; nprobe halved
+	IndexOptimizedForMemoryEfficient = "memory-efficient" // Flat or IVF,SQ4 indexes
+	IndexBIVFWithBackingFlat         = "bivf-flat"        // BFlat or BIVF with Flat backing index
+	IndexBIVFWithBackingSQ8          = "bivf-sq8"         // BFlat or BIVF with SQ8 backing index
 )
 
 const DefaultIndexOptimization = IndexOptimizedForRecall
@@ -62,8 +62,8 @@ var SupportedVectorIndexOptimizations = map[string]int{
 	IndexOptimizedForRecall:          0,
 	IndexOptimizedForLatency:         1,
 	IndexOptimizedForMemoryEfficient: 2,
-	IndexOptimizedWithBivfForLatency: 3,
-	IndexOptimizedWithBivfForDisk:    4,
+	IndexBIVFWithBackingFlat:         3,
+	IndexBIVFWithBackingSQ8:          4,
 }
 
 // Reverse maps vector index optimizations': int -> string
@@ -71,14 +71,15 @@ var VectorIndexOptimizationsReverseLookup = map[int]string{
 	0: IndexOptimizedForRecall,
 	1: IndexOptimizedForLatency,
 	2: IndexOptimizedForMemoryEfficient,
-	3: IndexOptimizedWithBivfForLatency,
-	4: IndexOptimizedWithBivfForDisk,
+	3: IndexBIVFWithBackingFlat,
+	4: IndexBIVFWithBackingSQ8,
 }
 
 func OptimizationRequiresBinaryIndex(optimization string) bool {
-	if optimization == IndexOptimizedWithBivfForLatency ||
-		optimization == IndexOptimizedWithBivfForDisk {
+	switch optimization {
+	case IndexBIVFWithBackingFlat, IndexBIVFWithBackingSQ8:
 		return true
+	default:
+		return false
 	}
-	return false
 }
