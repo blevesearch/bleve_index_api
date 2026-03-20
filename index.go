@@ -61,8 +61,8 @@ type CopyIndex interface {
 
 type IndexFileCopyable interface {
 	Index
-	UpdateFileInBolt(key []byte, value []byte) error //dest index
-	CopyFile(file string, d IndexDirectory) error    // source index
+	SetPathInBolt(key []byte, value []byte) error //dest index
+	CopyFile(file string, d IndexDirectory) error // source index
 }
 
 // EventIndex is an optional interface for exposing the support for firing event
