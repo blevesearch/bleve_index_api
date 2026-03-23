@@ -86,7 +86,7 @@ func (vd *VectorDoc) Reset() *VectorDoc {
 	return vd
 }
 
-type VectorIndex interface {
+type TrainableIndex interface {
 	Index
 	Train(*Batch) error
 }

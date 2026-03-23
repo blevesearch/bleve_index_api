@@ -24,5 +24,5 @@ type Directory interface {
 
 type IndexDirectory interface {
 	Directory
-	UpdateFileInBolt(key []byte, value []byte) error
+	SetPathInBolt(key []byte, value []byte) error
 }
