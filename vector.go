@@ -17,8 +17,6 @@
 
 package index
 
-import "math"
-
 type VectorField interface {
 	Vector() []float32
 	// Dimensionality of the vector
@@ -56,7 +54,6 @@ const (
 	IndexOptimizedForMemoryEfficient = "memory-efficient" // Flat or IVF,SQ4 indexes
 	IndexBIVFWithBackingFlat         = "bivf-flat"        // BFlat or BIVF with Flat backing index
 	IndexBIVFWithBackingSQ8          = "bivf-sq8"         // BFlat or BIVF with SQ8 backing index
-	IndexTrainedWithFastMerge        = "fast-merge"
 )
 
 const DefaultIndexOptimization = IndexOptimizedForRecall
@@ -65,8 +62,8 @@ var SupportedVectorIndexOptimizations = map[string]int{
 	IndexOptimizedForRecall:          0,
 	IndexOptimizedForLatency:         1,
 	IndexOptimizedForMemoryEfficient: 2,
-	IndexBIVFWithBackingFlat:         4,
-	IndexBIVFWithBackingSQ8:          8,
+	IndexBIVFWithBackingFlat:         3,
+	IndexBIVFWithBackingSQ8:          4,
 }
 
 // Reverse maps vector index optimizations': int -> string
@@ -74,8 +71,8 @@ var VectorIndexOptimizationsReverseLookup = map[int]string{
 	0: IndexOptimizedForRecall,
 	1: IndexOptimizedForLatency,
 	2: IndexOptimizedForMemoryEfficient,
-	4: IndexBIVFWithBackingFlat,
-	8: IndexBIVFWithBackingSQ8,
+	3: IndexBIVFWithBackingFlat,
+	4: IndexBIVFWithBackingSQ8,
 }
 
 func OptimizationRequiresBinaryIndex(optimization string) bool {
@@ -86,8 +83,6 @@ func OptimizationRequiresBinaryIndex(optimization string) bool {
 		return false
 	}
 }
-
-const IndexTrainedWithFastMergeBit = math.MaxUint16
 
 const TrainedIndexFileName = "trained_index"
 const TrainedIndexCallback = "_trained_index_callback"
