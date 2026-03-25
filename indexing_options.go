@@ -124,17 +124,5 @@ func (o FieldIndexingOptions) String() string {
 		}
 		rv += "GPU"
 	}
-	if !o.SkipDVCompression() {
-		if rv != "" {
-			rv += ", "
-		}
-		rv += "DV_COMPRESSION"
-	}
-	if !o.SkipDVChunking() {
-		if rv != "" {
-			rv += ", "
-		}
-		rv += "DV_CHUNKING"
-	}
 	return rv
 }
