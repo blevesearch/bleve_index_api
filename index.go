@@ -80,7 +80,7 @@ type UpdateIndex interface {
 	OpenMeta() error
 }
 
-type CustomizableIndex interface {
+type IndexWithCallbacks interface {
 	Index
 	WriterIdsInUse() (map[string]struct{}, error)
 	DropWriterIds(ids map[string]struct{}) error
