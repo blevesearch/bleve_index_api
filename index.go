@@ -59,6 +59,12 @@ type CopyIndex interface {
 	CopyReader() CopyReader
 }
 
+type IndexFileCopyable interface {
+	Index
+	SetPathInBolt(key []byte, value []byte) error //dest index
+	CopyFile(file string, d IndexDirectory) error // source index
+}
+
 // EventIndex is an optional interface for exposing the support for firing event
 // callbacks for various events in the index.
 type EventIndex interface {
