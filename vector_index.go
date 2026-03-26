@@ -85,8 +85,3 @@ func (vd *VectorDoc) Reset() *VectorDoc {
 	vd.ID = id[:0]
 	return vd
 }
-
-type TrainableIndex interface {
-	Index
-	Train(*Batch) error
-}

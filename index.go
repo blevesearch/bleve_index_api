@@ -65,6 +65,11 @@ type IndexFileCopyable interface {
 	CopyFile(file string, d IndexDirectory) error // source index
 }
 
+type TrainableIndex interface {
+	Index
+	Train(*Batch) error
+}
+
 // EventIndex is an optional interface for exposing the support for firing event
 // callbacks for various events in the index.
 type EventIndex interface {
