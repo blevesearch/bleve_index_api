@@ -60,7 +60,6 @@ type CopyIndex interface {
 }
 
 type IndexFileCopyable interface {
-	Index
 	SetPathInBolt(key []byte, value []byte) error //dest index
 	CopyFile(file string, d IndexDirectory) error // source index
 }
