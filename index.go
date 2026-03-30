@@ -59,12 +59,6 @@ type CopyIndex interface {
 	CopyReader() CopyReader
 }
 
-type IndexFileCopyable interface {
-	Index
-	SetPathInBolt(key []byte, value []byte) error //dest index
-	CopyFile(file string, d IndexDirectory) error // source index
-}
-
 type TrainableIndex interface {
 	Index
 	Train(*Batch) error
