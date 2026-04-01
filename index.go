@@ -486,3 +486,10 @@ func (a AncestorID) Add(n uint64) AncestorID {
 func (a AncestorID) ToIndexInternalID(prealloc IndexInternalID) IndexInternalID {
 	return NewIndexInternalID(prealloc, uint64(a))
 }
+
+// Default no-op implementation. Is called before writing any user data to a file.
+var WriterHook func(context []byte) (string, func(data []byte) []byte, error)
+
+// Default no-op implementation. Is called after reading any user data from a file.
+var ReaderHook func(id string, context []byte) (
+	func(data []byte) ([]byte, error), error)
