@@ -88,3 +88,10 @@ func OptimizationRequiresBinaryIndex(optimization string) bool {
 		return false
 	}
 }
+
+const TrainedIndexFileName = "trained_index"
+const TrainingKey = "_training"
+
+const TrainedIndexCallback = "_trained_index_callback"
+
+type TrainedIndexCallbackFn func(string) (interface{}, error)
