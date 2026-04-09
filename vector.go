@@ -18,6 +18,9 @@
 package index
 
 type VectorField interface {
+	// Name of the field
+	Name() string
+	// The vector data
 	Vector() []float32
 	// Dimensionality of the vector
 	Dims() int
@@ -25,6 +28,8 @@ type VectorField interface {
 	Similarity() string
 	// nlist/nprobe config (recall/latency) the index is optimized for
 	IndexOptimizedFor() string
+	// Field indexing options
+	Options() FieldIndexingOptions
 }
 
 // -----------------------------------------------------------------------------

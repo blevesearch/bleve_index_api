@@ -26,6 +26,7 @@ func TestFieldIndexingOptions(t *testing.T) {
 		includeTermVectors bool
 		docValues          bool
 		skipFreqNorm       bool
+		useGPU             bool
 	}{
 		{
 			options:            IndexField | StoreField | IncludeTermVectors,
@@ -88,6 +89,12 @@ func TestFieldIndexingOptions(t *testing.T) {
 			docValues:          true,
 			includeTermVectors: false,
 		},
+		{
+			options:      IndexField | SkipFreqNorm | GPU,
+			isIndexed:    true,
+			skipFreqNorm: true,
+			useGPU:       true,
+		},
 	}
 
 	for _, test := range tests {
@@ -111,6 +118,10 @@ func TestFieldIndexingOptions(t *testing.T) {
 		actuallyFreqNormValues := test.options.SkipFreqNorm()
 		if actuallyFreqNormValues != test.skipFreqNorm {
 			t.Errorf("expected docValue to be %v, got %v for %d", test.skipFreqNorm, actuallyFreqNormValues, test.options)
+		}
+		actuallyUseGPU := test.options.UseGPU()
+		if actuallyUseGPU != test.useGPU {
+			t.Errorf("expected useGPU to be %v, got %v for %d", test.useGPU, actuallyUseGPU, test.options)
 		}
 	}
 }
