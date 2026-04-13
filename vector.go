@@ -95,3 +95,15 @@ const TrainingKey = "_training"
 const TrainedIndexCallback = "_trained_index_callback"
 
 type TrainedIndexCallbackFn func(string) (interface{}, error)
+
+// GPU vector search error callbacks
+
+// Called when an index move from CPU to GPU fails
+const GPUToCPUCloneErrorKey = "_gpu_to_cpu_clone_error_key"
+
+type GPUToCPUCloneErrorCallback func(err error)
+
+// Called when a generic error occurs on the GPU
+const GPUErrorKey = "_gpu_error_key"
+
+type GPUErrorCallback func(err error)
