@@ -98,12 +98,12 @@ type TrainedIndexCallbackFn func(string) (interface{}, error)
 
 // GPU vector search error callbacks
 
-// Called when an index move from CPU to GPU fails
-const GPUToCPUCloneErrorKey = "_gpu_to_cpu_clone_error_key"
+// Called when an index move from CPU to CPU fails
+const CPUToGPUCloneErrorKey = "_cpu_to_gpu_clone_error"
 
-type GPUToCPUCloneErrorCallback func(err error)
+type CPUToGPUCloneErrorCallback func(err error)
 
 // Called when a generic error occurs on the GPU
-const GPUErrorKey = "_gpu_error_key"
+const GPUErrorKey = "_gpu_error"
 
 type GPUErrorCallback func(err error)
