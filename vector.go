@@ -59,7 +59,7 @@ const (
 	IndexOptimizedForMemoryEfficient = "memory-efficient" // Flat or IVF,SQ4 indexes
 	IndexBIVFWithBackingFlat         = "bivf-flat"        // BFlat or BIVF with Flat backing index
 	IndexBIVFWithBackingSQ8          = "bivf-sq8"         // BFlat or BIVF with SQ8 backing index
-	IndexOptimizedWithRaBitQ         = "rabitq"           // Flat or IVF,RaBitQ indexes
+	IndexIVFRaBitQ                   = "ivf,rabitq"       // Flat or IVF,RaBitQ indexes
 )
 
 const DefaultIndexOptimization = IndexOptimizedForRecall
@@ -70,7 +70,7 @@ var SupportedVectorIndexOptimizations = map[string]int{
 	IndexOptimizedForMemoryEfficient: 2,
 	IndexBIVFWithBackingFlat:         3,
 	IndexBIVFWithBackingSQ8:          4,
-	IndexOptimizedWithRaBitQ:         5,
+	IndexIVFRaBitQ:                   5,
 }
 
 // Reverse maps vector index optimizations': int -> string
@@ -80,7 +80,7 @@ var VectorIndexOptimizationsReverseLookup = map[int]string{
 	2: IndexOptimizedForMemoryEfficient,
 	3: IndexBIVFWithBackingFlat,
 	4: IndexBIVFWithBackingSQ8,
-	5: IndexOptimizedWithRaBitQ,
+	5: IndexIVFRaBitQ,
 }
 
 func OptimizationRequiresBinaryIndex(optimization string) bool {
