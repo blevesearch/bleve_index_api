@@ -235,11 +235,12 @@ func (id IndexInternalID) SetValue(in uint64) {
 }
 
 type TermFieldDoc struct {
-	Term    string
-	ID      IndexInternalID
-	Freq    uint64
-	Norm    float64
-	Vectors []*TermFieldVector
+	Term     string
+	ID       IndexInternalID
+	Freq     uint64
+	Norm     float64
+	NormByte uint8 // raw SmallFloat byte from norm column (§20); 0 = not available
+	Vectors  []*TermFieldVector
 }
 
 func (tfd *TermFieldDoc) Size() int {
@@ -255,12 +256,15 @@ func (tfd *TermFieldDoc) Size() int {
 
 // Reset allows an already allocated TermFieldDoc to be reused
 func (tfd *TermFieldDoc) Reset() *TermFieldDoc {
-	// remember the []byte used for the ID
+	// Save backing arrays for reuse — restored below.
 	id := tfd.ID
 	vectors := tfd.Vectors
-	// idiom to copy over from empty TermFieldDoc (0 allocations)
-	*tfd = TermFieldDoc{}
-	// reuse the []byte already allocated (and reset len to 0)
+	// Zero only the fields not being restored (avoids a full-struct duffzero).
+	tfd.Term = ""
+	tfd.Freq = 0
+	tfd.Norm = 0
+	tfd.NormByte = 0
+	// Restore reusable allocations.
 	tfd.ID = id[:0]
 	tfd.Vectors = vectors[:0]
 	return tfd

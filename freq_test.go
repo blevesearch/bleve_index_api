@@ -132,3 +132,27 @@ func TestTokenFrequenciesMergeAllLeftEmpty(t *testing.T) {
 		t.Errorf("expected %#v, got %#v", expectedResult, tf1)
 	}
 }
+
+func TestTermFieldDocResetClearsNormByte(t *testing.T) {
+	tfd := &TermFieldDoc{
+		Term:     "beer",
+		Freq:     7,
+		Norm:     0.5,
+		NormByte: 42,
+		ID:       IndexInternalID("abc"),
+	}
+	tfd.Reset()
+	if tfd.NormByte != 0 {
+		t.Errorf("expected NormByte=0 after Reset, got %d", tfd.NormByte)
+	}
+	if tfd.Freq != 0 {
+		t.Errorf("expected Freq=0 after Reset, got %d", tfd.Freq)
+	}
+	if tfd.Term != "" {
+		t.Errorf("expected Term=\"\" after Reset, got %q", tfd.Term)
+	}
+	// ID and Vectors backing arrays should be preserved (zero-length, not nil)
+	if tfd.ID == nil {
+		t.Error("expected ID backing array preserved after Reset")
+	}
+}
