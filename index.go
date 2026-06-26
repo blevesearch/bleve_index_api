@@ -23,12 +23,15 @@ import (
 
 var reflectStaticSizeTermFieldDoc int
 var reflectStaticSizeTermFieldVector int
+var reflectStaticSizeGeoCellFieldDoc int
 
 func init() {
 	var tfd TermFieldDoc
 	reflectStaticSizeTermFieldDoc = int(reflect.TypeOf(tfd).Size())
 	var tfv TermFieldVector
 	reflectStaticSizeTermFieldVector = int(reflect.TypeOf(tfv).Size())
+	var gfd GeoCellFieldDoc
+	reflectStaticSizeGeoCellFieldDoc = int(reflect.TypeOf(gfd).Size())
 }
 
 type Index interface {
@@ -487,6 +490,42 @@ func (a AncestorID) Add(n uint64) AncestorID {
 // ToIndexInternalID converts the AncestorID to an IndexInternalID.
 func (a AncestorID) ToIndexInternalID(prealloc IndexInternalID) IndexInternalID {
 	return NewIndexInternalID(prealloc, uint64(a))
+}
+
+// -----------------------------------------------------------------------------
+type GeoCellIndexReader interface {
+	IndexReader
+
+	GeoCellReader(ctx context.Context, field string) (GeoCellReader, error)
+}
+
+type GeoCellReader interface {
+	Search(shape GeoJSON, relation string) error
+	Next(*GeoCellFieldDoc) (*GeoCellFieldDoc, error)
+	Advance(ID IndexInternalID, preAlloced *GeoCellFieldDoc) (*GeoCellFieldDoc, error)
+
+	Count() uint64
+	Close() error
+
+	Size() int
+}
+
+type GeoCellFieldDoc struct {
+	ID IndexInternalID
+}
+
+func (g *GeoCellFieldDoc) Size() int {
+	return reflectStaticSizeGeoCellFieldDoc + sizeOfPtr + len(g.ID)
+}
+
+func (g *GeoCellFieldDoc) Reset() *GeoCellFieldDoc {
+	// remember the []byte used for the ID
+	id := g.ID
+	// idiom to copy over from empty GeoCellFieldDoc (0 allocations)
+	*g = GeoCellFieldDoc{}
+	// reuse the []byte already allocated (and reset len to 0)
+	g.ID = id[:0]
+	return g
 }
 
 // Default no-op implementation. Is called before writing any user data to a file.

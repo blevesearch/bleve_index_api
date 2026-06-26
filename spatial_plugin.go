@@ -44,4 +44,10 @@ type GeoJSON interface {
 
 	// Value returns the byte value for the shape.
 	Value() ([]byte, error)
+
+	// Returns the inner and cross cells for the shape
+	Cells() (innerCells []uint64, crossCells []uint64)
+
+	// Returns the bounding box for the shape.
+	BoundingBox() GeoJSON
 }

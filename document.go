@@ -132,3 +132,15 @@ type NestedDocument interface {
 	// The provided visitor function is called for each nested document.
 	VisitNestedDocuments(visitor func(doc Document))
 }
+
+type GeoShapeV2Field interface {
+	Field
+
+	InnerCells() []uint64
+	CrossCells() []uint64
+
+	EncodedBoundingBox() []byte
+	EncodedShape() []byte
+
+	Score() uint64
+}
