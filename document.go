@@ -89,6 +89,16 @@ type GeoShapeField interface {
 	EncodedShape() []byte
 }
 
+type GeoShapeV2Field interface {
+	InnerCells() []uint64
+	CrossCells() []uint64
+
+	EncodedBoundingBox() []byte
+	EncodedShape() []byte
+
+	Score() uint64
+}
+
 type IPField interface {
 	IP() (net.IP, error)
 }
@@ -131,16 +141,4 @@ type NestedDocument interface {
 	// VisitNestedDocuments allows iteration over all nested documents in the document.
 	// The provided visitor function is called for each nested document.
 	VisitNestedDocuments(visitor func(doc Document))
-}
-
-type GeoShapeV2Field interface {
-	Field
-
-	InnerCells() []uint64
-	CrossCells() []uint64
-
-	EncodedBoundingBox() []byte
-	EncodedShape() []byte
-
-	Score() uint64
 }

@@ -23,15 +23,15 @@ import (
 
 var reflectStaticSizeTermFieldDoc int
 var reflectStaticSizeTermFieldVector int
-var reflectStaticSizeGeoCellFieldDoc int
+var reflectStaticSizeGeoShapeV2FieldDoc int
 
 func init() {
 	var tfd TermFieldDoc
 	reflectStaticSizeTermFieldDoc = int(reflect.TypeOf(tfd).Size())
 	var tfv TermFieldVector
 	reflectStaticSizeTermFieldVector = int(reflect.TypeOf(tfv).Size())
-	var gfd GeoCellFieldDoc
-	reflectStaticSizeGeoCellFieldDoc = int(reflect.TypeOf(gfd).Size())
+	var gfd GeoShapeV2FieldDoc
+	reflectStaticSizeGeoShapeV2FieldDoc = int(reflect.TypeOf(gfd).Size())
 }
 
 type Index interface {
@@ -493,40 +493,48 @@ func (a AncestorID) ToIndexInternalID(prealloc IndexInternalID) IndexInternalID 
 }
 
 // -----------------------------------------------------------------------------
-type GeoCellIndexReader interface {
+// GeoShapeV2IndexReader is an extended index reader that supports reading and
+// querying Geo-Shape V2 data.
+type GeoShapeV2IndexReader interface {
 	IndexReader
 
-	GeoCellReader(ctx context.Context, field string) (GeoCellReader, error)
+	GeoShapeV2FieldReader(ctx context.Context, field string) (
+		GeoShapeV2FieldReader, error)
 }
 
-type GeoCellReader interface {
+type GeoShapeV2FieldReader interface {
+	// Performs a full search and obtains all of the hits required for
+	// the given shape and relation.
 	Search(shape GeoJSON, relation string) error
-	Next(*GeoCellFieldDoc) (*GeoCellFieldDoc, error)
-	Advance(ID IndexInternalID, preAlloced *GeoCellFieldDoc) (*GeoCellFieldDoc, error)
+
+	Next(*GeoShapeV2FieldDoc) (*GeoShapeV2FieldDoc, error)
+	Advance(ID IndexInternalID, preAlloced *GeoShapeV2FieldDoc) (
+		*GeoShapeV2FieldDoc, error)
 
 	Count() uint64
 	Close() error
-
 	Size() int
 }
 
-type GeoCellFieldDoc struct {
+type GeoShapeV2FieldDoc struct {
 	ID IndexInternalID
 }
 
-func (g *GeoCellFieldDoc) Size() int {
-	return reflectStaticSizeGeoCellFieldDoc + sizeOfPtr + len(g.ID)
+func (g *GeoShapeV2FieldDoc) Size() int {
+	return reflectStaticSizeGeoShapeV2FieldDoc + sizeOfPtr + len(g.ID)
 }
 
-func (g *GeoCellFieldDoc) Reset() *GeoCellFieldDoc {
+func (g *GeoShapeV2FieldDoc) Reset() *GeoShapeV2FieldDoc {
 	// remember the []byte used for the ID
 	id := g.ID
-	// idiom to copy over from empty GeoCellFieldDoc (0 allocations)
-	*g = GeoCellFieldDoc{}
+	// idiom to copy over from empty GeoShapeV2FieldDoc (0 allocations)
+	*g = GeoShapeV2FieldDoc{}
 	// reuse the []byte already allocated (and reset len to 0)
 	g.ID = id[:0]
 	return g
 }
+
+// -----------------------------------------------------------------------------
 
 // Default no-op implementation. Is called before writing any user data to a file.
 var WriterHook func(context []byte) (string, func(data []byte) []byte, error)
