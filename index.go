@@ -15,10 +15,8 @@
 package index
 
 import (
-	"bytes"
 	"context"
 	"encoding/binary"
-	"fmt"
 	"reflect"
 )
 
@@ -221,15 +219,19 @@ func (id IndexInternalID) Equals(other IndexInternalID) bool {
 
 // Compare compares two IndexInternalID values, inherently comparing the encoded uint64 values.
 func (id IndexInternalID) Compare(other IndexInternalID) int {
-	return bytes.Compare(id, other)
+	idVal := id.Value()
+	otherVal := other.Value()
+	if idVal < otherVal {
+		return -1
+	} else if idVal > otherVal {
+		return 1
+	}
+	return 0
 }
 
 // Value returns the uint64 value encoded in the IndexInternalID.
-func (id IndexInternalID) Value() (uint64, error) {
-	if len(id) != 8 {
-		return 0, fmt.Errorf("wrong len for IndexInternalID: %q", id)
-	}
-	return binary.BigEndian.Uint64(id), nil
+func (id IndexInternalID) Value() uint64 {
+	return binary.BigEndian.Uint64(id)
 }
 
 type TermFieldDoc struct {
