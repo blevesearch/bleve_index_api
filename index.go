@@ -234,6 +234,11 @@ func (id IndexInternalID) Value() uint64 {
 	return binary.BigEndian.Uint64(id)
 }
 
+// Reset replaces the encoded uint64 value in the IndexInternalID with a new value.
+func (id IndexInternalID) Reset(in uint64) {
+	binary.BigEndian.PutUint64(id, in)
+}
+
 type TermFieldDoc struct {
 	Term    string
 	ID      IndexInternalID
