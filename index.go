@@ -15,6 +15,7 @@
 package index
 
 import (
+	"bytes"
 	"context"
 	"encoding/binary"
 	"reflect"
@@ -219,14 +220,7 @@ func (id IndexInternalID) Equals(other IndexInternalID) bool {
 
 // Compare compares two IndexInternalID values, inherently comparing the encoded uint64 values.
 func (id IndexInternalID) Compare(other IndexInternalID) int {
-	idVal := id.Value()
-	otherVal := other.Value()
-	if idVal < otherVal {
-		return -1
-	} else if idVal > otherVal {
-		return 1
-	}
-	return 0
+	return bytes.Compare(id, other)
 }
 
 // Value returns the uint64 value encoded in the IndexInternalID.
