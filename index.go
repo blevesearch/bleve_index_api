@@ -203,8 +203,9 @@ func NewIndexInternalID(buf []byte, in uint64) IndexInternalID {
 			buf = make([]byte, 8)
 		}
 	}
-	binary.BigEndian.PutUint64(buf, in)
-	return buf
+	id := IndexInternalID(buf)
+	id.SetValue(in)
+	return id
 }
 
 // NewIndexInternalIDFrom creates a new IndexInternalID by copying from `other`, reusing `buf` when possible.
@@ -228,8 +229,8 @@ func (id IndexInternalID) Value() uint64 {
 	return binary.BigEndian.Uint64(id)
 }
 
-// Reset replaces the encoded uint64 value in the IndexInternalID with a new value.
-func (id IndexInternalID) Reset(in uint64) {
+// SetValue overwrites the encoded uint64 value in the IndexInternalID in place.
+func (id IndexInternalID) SetValue(in uint64) {
 	binary.BigEndian.PutUint64(id, in)
 }
 
