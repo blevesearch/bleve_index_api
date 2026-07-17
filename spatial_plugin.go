@@ -45,10 +45,21 @@ type GeoJSON interface {
 	// Value returns the byte value for the shape.
 	Value() ([]byte, error)
 
-	// V2 methods
-	// Returns the inner and cross cells for the shape
-	Cells() (innerCells []uint64, crossCells []uint64)
+	// The following methods support the geo shape v2 index. Both cell
+	// methods return the shape's S2 cell covering split into inner cells
+	// (cells fully contained within the shape) and cross cells (cells that
+	// overlap the shape's boundary); they differ only in the region coverer
+	// configuration used.
 
-	// Returns the bounding box for the shape.
+	// IndexCells returns the covering computed with the index-time coverer.
+	// It is called when analyzing a document's shape for indexing.
+	IndexCells() (innerCells []uint64, crossCells []uint64)
+
+	// QueryCells returns the covering computed with the query-time coverer.
+	// It is called on the query shape by the geo shape v2 relation queries.
+	QueryCells() (innerCells []uint64, crossCells []uint64)
+
+	// BoundingBox returns the bounding box of the shape, or nil if the
+	// shape does not support the geo shape v2 index.
 	BoundingBox() GeoJSON
 }

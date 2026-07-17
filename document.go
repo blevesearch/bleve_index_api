@@ -89,13 +89,29 @@ type GeoShapeField interface {
 	EncodedShape() []byte
 }
 
+// GeoShapeV2Field represents an analyzed geo shape field, exposing the
+// shape's S2 cell covering and encoded metadata to the geo shape v2 index
+// section.
 type GeoShapeV2Field interface {
+	// InnerCells returns the covering cells fully contained within the shape.
 	InnerCells() []uint64
+	// CrossCells returns the covering cells that overlap the shape's boundary.
 	CrossCells() []uint64
 
+	// EncodedBoundingBox returns the serialized bounding box of the shape,
+	// stored in the segment and used at query time for exact filtering.
 	EncodedBoundingBox() []byte
+	// EncodedShape returns the serialized shape, stored in the segment and
+	// used at query time for exact filtering.
 	EncodedShape() []byte
 
+	// Score returns the shape's total cell score: the sum of the per-cell
+	// scores (derived from each cell's level) over the inner and cross cells,
+	// computed at analysis time. Relation queries compare a document's
+	// accumulated matched-cell score against this total — e.g. a within query
+	// hits when they are equal, meaning every one of the document's cells was
+	// covered by the query. This value surfaces as DocScores() in the
+	// segment's GeoShapeV2Data.
 	Score() uint64
 }
 

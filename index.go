@@ -502,20 +502,34 @@ type GeoShapeV2IndexReader interface {
 		GeoShapeV2FieldReader, error)
 }
 
+// GeoShapeV2FieldReader iterates over the documents whose shapes satisfy a
+// spatial relation with a query shape. Unlike TermFieldReader, it is not
+// ready to iterate on construction: Search must be called first, and it
+// eagerly materializes all hits, which Next and Advance then enumerate.
 type GeoShapeV2FieldReader interface {
-	// Performs a full search and obtains all of the hits required for
-	// the given shape and relation.
+	// Search performs a full search and obtains all of the hits for the
+	// given shape and relation. Valid relations are "intersects", "within",
+	// "contains" and "disjoint".
 	Search(shape GeoJSON, relation string) error
 
+	// Next returns the next document matching the search, or nil when it
+	// reaches the end of the enumeration. The preAlloced GeoShapeV2FieldDoc
+	// is optional, and when non-nil, will be used instead of allocating memory.
 	Next(*GeoShapeV2FieldDoc) (*GeoShapeV2FieldDoc, error)
+
+	// Advance resets the enumeration at specified document or its immediate
+	// follower.
 	Advance(ID IndexInternalID, preAlloced *GeoShapeV2FieldDoc) (
 		*GeoShapeV2FieldDoc, error)
 
+	// Count returns the number of documents matched by the preceding Search.
 	Count() uint64
 	Close() error
 	Size() int
 }
 
+// GeoShapeV2FieldDoc represents a single hit from a geo shape v2 search;
+// ID is the internal document ID.
 type GeoShapeV2FieldDoc struct {
 	ID IndexInternalID
 }
