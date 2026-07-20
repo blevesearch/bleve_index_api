@@ -53,11 +53,11 @@ type GeoJSON interface {
 
 	// IndexCells returns the covering computed with the index-time coverer.
 	// It is called when analyzing a document's shape for indexing.
-	IndexCells() (innerCells []uint64, crossCells []uint64)
+	IndexCells() (inner, cross []uint64)
 
 	// QueryCells returns the covering computed with the query-time coverer.
 	// It is called on the query shape by the geo shape v2 relation queries.
-	QueryCells() (innerCells []uint64, crossCells []uint64)
+	QueryCells() (inner, cross []uint64)
 
 	// BoundingBox returns the bounding box of the shape, or nil if the
 	// shape does not support the geo shape v2 index.

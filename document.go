@@ -105,14 +105,15 @@ type GeoShapeV2Field interface {
 	// used at query time for exact filtering.
 	EncodedShape() []byte
 
-	// Score returns the shape's total cell score: the sum of the per-cell
-	// scores (derived from each cell's level) over the inner and cross cells,
-	// computed at analysis time. Relation queries compare a document's
-	// accumulated matched-cell score against this total — e.g. a within query
-	// hits when they are equal, meaning every one of the document's cells was
-	// covered by the query. This value surfaces as DocScores() in the
-	// segment's GeoShapeV2Data.
-	Score() uint64
+	// Scores returns the shape's inner and cross cell scores separately:
+	// the sum of the per-cell scores (derived from each cell's level) over
+	// the inner cells, and that same sum over the cross cells, computed at
+	// analysis time. They are kept separate (rather than combined into one
+	// total) because a document's inner and cross cell coverings are
+	// matched against a query's cell coverings independently, and relation
+	// queries need to reason about how much of each was actually covered.
+	// These values surface as DocScores() in the segment's GeoShapeV2Data.
+	Scores() (inner, cross uint64)
 }
 
 type IPField interface {
