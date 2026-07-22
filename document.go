@@ -89,30 +89,19 @@ type GeoShapeField interface {
 	EncodedShape() []byte
 }
 
-// GeoShapeV2Field represents an analyzed geo shape field, exposing the
-// shape's S2 cell covering and encoded metadata to the geo shape v2 index
-// section.
+// GeoShapeV2Field represents an analyzed geo shape field
 type GeoShapeV2Field interface {
-	// InnerCells returns the covering cells fully contained within the shape.
+	// InnerCells returns the covering cells fully contained within the shape
 	InnerCells() []uint64
-	// CrossCells returns the covering cells that overlap the shape's boundary.
+	// CrossCells returns the covering cells that overlap the shape's boundary
 	CrossCells() []uint64
 
-	// EncodedBoundingBox returns the serialized bounding box of the shape,
-	// stored in the segment and used at query time for exact filtering.
+	// EncodedBoundingBox returns the serialized bounding box of the shape
 	EncodedBoundingBox() []byte
-	// EncodedShape returns the serialized shape, stored in the segment and
-	// used at query time for exact filtering.
+	// EncodedShape returns the serialized shape
 	EncodedShape() []byte
 
-	// Scores returns the shape's inner and cross cell scores separately:
-	// the sum of the per-cell scores (derived from each cell's level) over
-	// the inner cells, and that same sum over the cross cells, computed at
-	// analysis time. They are kept separate (rather than combined into one
-	// total) because a document's inner and cross cell coverings are
-	// matched against a query's cell coverings independently, and relation
-	// queries need to reason about how much of each was actually covered.
-	// These values surface as DocScores() in the segment's GeoShapeV2Data.
+	// Scores returns the shape's inner and cross cell scores
 	Scores() (inner, cross uint64)
 }
 
