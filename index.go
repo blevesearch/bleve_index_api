@@ -23,12 +23,15 @@ import (
 
 var reflectStaticSizeTermFieldDoc int
 var reflectStaticSizeTermFieldVector int
+var reflectStaticSizeGeoShapeV2FieldDoc int
 
 func init() {
 	var tfd TermFieldDoc
 	reflectStaticSizeTermFieldDoc = int(reflect.TypeOf(tfd).Size())
 	var tfv TermFieldVector
 	reflectStaticSizeTermFieldVector = int(reflect.TypeOf(tfv).Size())
+	var gfd GeoShapeV2FieldDoc
+	reflectStaticSizeGeoShapeV2FieldDoc = int(reflect.TypeOf(gfd).Size())
 }
 
 type Index interface {
@@ -488,6 +491,62 @@ func (a AncestorID) Add(n uint64) AncestorID {
 func (a AncestorID) ToIndexInternalID(prealloc IndexInternalID) IndexInternalID {
 	return NewIndexInternalID(prealloc, uint64(a))
 }
+
+// -----------------------------------------------------------------------------
+// GeoShapeV2IndexReader is an extended index reader that supports reading and
+// querying Geo-Shape V2 data.
+type GeoShapeV2IndexReader interface {
+	IndexReader
+
+	GeoShapeV2FieldReader(ctx context.Context, field string) (
+		GeoShapeV2FieldReader, error)
+}
+
+// GeoShapeV2FieldReader iterates over the documents whose shapes satisfy a
+// spatial relation with a query shape. Search must be called before Next or Advance.
+type GeoShapeV2FieldReader interface {
+	// Search performs a full search and obtains all of the hits for the
+	// given shape and relation.
+	Search(shape GeoJSON, relation string) error
+
+	// Next returns the next document matching the search, or nil when it
+	// reaches the end of the enumeration.
+	Next(*GeoShapeV2FieldDoc) (*GeoShapeV2FieldDoc, error)
+
+	// Advance resets the enumeration at specified document.
+	Advance(ID IndexInternalID, preAlloced *GeoShapeV2FieldDoc) (
+		*GeoShapeV2FieldDoc, error)
+
+	// Count returns the number of documents matched by the preceding Search.
+	Count() uint64
+
+	// Close releases any resources associated with the reader.
+	Close() error
+
+	// Size returns the size of the reader in bytes.
+	Size() int
+}
+
+// GeoShapeV2FieldDoc represents a single hit from a geo shape v2 search.
+type GeoShapeV2FieldDoc struct {
+	ID IndexInternalID
+}
+
+func (g *GeoShapeV2FieldDoc) Size() int {
+	return reflectStaticSizeGeoShapeV2FieldDoc + sizeOfPtr + len(g.ID)
+}
+
+func (g *GeoShapeV2FieldDoc) Reset() *GeoShapeV2FieldDoc {
+	// remember the []byte used for the ID
+	id := g.ID
+	// idiom to copy over from empty GeoShapeV2FieldDoc (0 allocations)
+	*g = GeoShapeV2FieldDoc{}
+	// reuse the []byte already allocated (and reset len to 0)
+	g.ID = id[:0]
+	return g
+}
+
+// -----------------------------------------------------------------------------
 
 // Default no-op implementation. Is called before writing any user data to a file.
 var WriterHook func(context []byte) (string, func(data []byte) []byte, error)
