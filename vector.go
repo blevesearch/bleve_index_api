@@ -97,6 +97,12 @@ const TrainingKey = "_training"
 
 type TrainingParams struct {
 	NumCentroids int
+	// SingleShotTraining is set when the whole training corpus arrives in a
+	// single Train() call, i.e. the first sample is also the final one. The
+	// trained segment is then never merged with a further sample, so the
+	// segment layer only has to train the vector index on that corpus - the
+	// training vectors themselves need not be added to it.
+	SingleShotTraining bool
 }
 
 const TrainedIndexCallback = "_trained_index_callback"
