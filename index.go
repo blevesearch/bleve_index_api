@@ -24,6 +24,7 @@ import (
 var reflectStaticSizeTermFieldDoc int
 var reflectStaticSizeTermFieldVector int
 var reflectStaticSizeGeoShapeV2FieldDoc int
+var reflectStaticSizeNumericV2FieldDoc int
 
 func init() {
 	var tfd TermFieldDoc
@@ -32,6 +33,8 @@ func init() {
 	reflectStaticSizeTermFieldVector = int(reflect.TypeOf(tfv).Size())
 	var gfd GeoShapeV2FieldDoc
 	reflectStaticSizeGeoShapeV2FieldDoc = int(reflect.TypeOf(gfd).Size())
+	var nfd NumericV2FieldDoc
+	reflectStaticSizeNumericV2FieldDoc = int(reflect.TypeOf(nfd).Size())
 }
 
 type Index interface {
@@ -544,6 +547,62 @@ func (g *GeoShapeV2FieldDoc) Reset() *GeoShapeV2FieldDoc {
 	// reuse the []byte already allocated (and reset len to 0)
 	g.ID = id[:0]
 	return g
+}
+
+// -----------------------------------------------------------------------------
+// NumericV2IndexReader is an extended index reader that supports reading and
+// querying number_v2 data.
+type NumericV2IndexReader interface {
+	IndexReader
+
+	NumericV2FieldReader(ctx context.Context, field string) (
+		NumericV2FieldReader, error)
+}
+
+// NumericV2FieldReader iterates over the documents whose values for a field
+// fall within a numeric range. Search must be called before Next or Advance.
+type NumericV2FieldReader interface {
+	// Search performs a full search and obtains all of the hits for the given
+	// range. A nil min or max is unbounded. A nil inclusiveMin defaults to
+	// true and a nil inclusiveMax defaults to false, matching the semantics of
+	// a numeric range query over the inverted index.
+	Search(min, max *float64, inclusiveMin, inclusiveMax *bool) error
+
+	// Next returns the next document matching the search, or nil when it
+	// reaches the end of the enumeration.
+	Next(*NumericV2FieldDoc) (*NumericV2FieldDoc, error)
+
+	// Advance resets the enumeration at specified document.
+	Advance(ID IndexInternalID, preAlloced *NumericV2FieldDoc) (
+		*NumericV2FieldDoc, error)
+
+	// Count returns the number of documents matched by the preceding Search.
+	Count() uint64
+
+	// Close releases any resources associated with the reader.
+	Close() error
+
+	// Size returns the size of the reader in bytes.
+	Size() int
+}
+
+// NumericV2FieldDoc represents a single hit from a number_v2 search.
+type NumericV2FieldDoc struct {
+	ID IndexInternalID
+}
+
+func (n *NumericV2FieldDoc) Size() int {
+	return reflectStaticSizeNumericV2FieldDoc + sizeOfPtr + len(n.ID)
+}
+
+func (n *NumericV2FieldDoc) Reset() *NumericV2FieldDoc {
+	// remember the []byte used for the ID
+	id := n.ID
+	// idiom to copy over from empty NumericV2FieldDoc (0 allocations)
+	*n = NumericV2FieldDoc{}
+	// reuse the []byte already allocated (and reset len to 0)
+	n.ID = id[:0]
+	return n
 }
 
 // -----------------------------------------------------------------------------
