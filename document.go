@@ -105,21 +105,11 @@ type GeoShapeV2Field interface {
 	Scores() (inner, cross uint64)
 }
 
-// NumericV2Field represents an analyzed number_v2 field. The value is carried
-// twice because the two consumers need different encodings: the index section
-// stores SortableValue for its sorted search array, while the sort and facet
-// paths visit doc values as prefix-coded terms.
+// NumericV2Field represents an analyzed number_v2 field.
 type NumericV2Field interface {
 	// SortableValue returns the field's value encoded as a uint64 whose
 	// unsigned ordering matches the float64 ordering of the original value.
 	SortableValue() uint64
-
-	// DocValueTerm returns the prefix-coded, zero-shift representation of the
-	// field's value, which is what gets written to the field's doc values.
-	// This is deliberately separate from Value(): Value() is the stored-field
-	// representation, and conflating the two would silently break sorting and
-	// faceting if either ever changed.
-	DocValueTerm() []byte
 }
 
 type IPField interface {

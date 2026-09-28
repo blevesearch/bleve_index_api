@@ -564,8 +564,7 @@ type NumericV2IndexReader interface {
 type NumericV2FieldReader interface {
 	// Search performs a full search and obtains all of the hits for the given
 	// range. A nil min or max is unbounded. A nil inclusiveMin defaults to
-	// true and a nil inclusiveMax defaults to false, matching the semantics of
-	// a numeric range query over the inverted index.
+	// true and a nil inclusiveMax defaults to false.
 	Search(min, max *float64, inclusiveMin, inclusiveMax *bool) error
 
 	// Next returns the next document matching the search, or nil when it
