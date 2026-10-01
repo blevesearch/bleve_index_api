@@ -110,6 +110,9 @@ type NumericV2Field interface {
 	// SortableValue returns the field's value encoded as a uint64 whose
 	// unsigned ordering matches the float64 ordering of the original value.
 	SortableValue() uint64
+
+	// DocValue returns the bytes written to this field's doc values
+	DocValue() []byte
 }
 
 type IPField interface {
